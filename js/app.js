@@ -123,6 +123,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Badges informativos de status
     hasAiBadge: document.getElementById("ai-status-badge"),
+    geminiKeyTipBanner: document.getElementById("gemini-key-tip-banner"),
+    openGeminiConfigBtns: document.querySelectorAll(".js-open-gemini-config"),
     statsClassicCount: document.getElementById("stats-classic-count")
   };
 
@@ -150,8 +152,12 @@ document.addEventListener("DOMContentLoaded", () => {
         await window.storageDB.init();
         const dbKey = await window.storageDB.getApiKey();
         const dbModel = await window.storageDB.getModel();
-        if (dom.inputApiKey && dbKey) dom.inputApiKey.value = dbKey;
+        if (dbKey && dbKey.trim()) {
+          geminiService.cachedKey = dbKey.trim();
+          if (dom.inputApiKey) dom.inputApiKey.value = dbKey.trim();
+        }
         if (dom.selectModel && dbModel) dom.selectModel.value = dbModel;
+        updateAiBadge();
 
         // Carrega histórico do Chat com Darwin do IndexedDB
         await loadDarwinChatFromStorage();
@@ -159,7 +165,9 @@ document.addEventListener("DOMContentLoaded", () => {
         console.warn("[App] Falha ao carregar do IndexedDB:", e);
       }
     } else {
-      if (dom.inputApiKey) dom.inputApiKey.value = geminiService.getApiKey();
+      if (dom.inputApiKey && geminiService.hasUserApiKey()) {
+        dom.inputApiKey.value = geminiService.getApiKey();
+      }
       if (dom.selectModel) dom.selectModel.value = geminiService.getModel();
     }
 
@@ -299,6 +307,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Modais
     dom.btnOpenConfig.addEventListener("click", () => openModal(dom.modalConfig));
+    if (dom.hasAiBadge) {
+      dom.hasAiBadge.style.cursor = "pointer";
+      dom.hasAiBadge.addEventListener("click", () => {
+        sounds.playClick();
+        openModal(dom.modalConfig);
+        if (dom.inputApiKey) setTimeout(() => dom.inputApiKey.focus(), 100);
+      });
+    }
+    if (dom.openGeminiConfigBtns) {
+      dom.openGeminiConfigBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          sounds.playClick();
+          openModal(dom.modalConfig);
+          if (dom.inputApiKey) setTimeout(() => dom.inputApiKey.focus(), 100);
+        });
+      });
+    }
     dom.btnOpenCatalog.addEventListener("click", () => {
       renderCatalog();
       openModal(dom.modalCatalog);
@@ -515,6 +540,24 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const result = await geminiService.refuteCustomArgument(text);
 
+      if (result && result.fora_de_escopo) {
+        if (dom.customRefutationResult) {
+          dom.customRefutationResult.classList.remove("hidden");
+          dom.customRefutationResult.innerHTML = `
+            <div class="off-topic-refusal-card">
+              <div class="off-topic-icon">🧬</div>
+              <div class="off-topic-body">
+                <h4>Escopo Exclusivo: Evolução & Origem da Vida</h4>
+                <p>${escapeHtml(result.mensagem_recusa)}</p>
+              </div>
+            </div>
+          `;
+        }
+        sounds.playClick();
+        showToast("Tema fora do escopo de evolução e origem da vida.", "info", 4500);
+        return;
+      }
+
       // Validação ao vivo das fontes geradas
       if (window.liveCitationValidator && result.fontes_cientificas?.length > 0) {
         updateLoadingQuote("⚡ Auditando fontes geradas em tempo real com CrossRef e OpenAlex...");
@@ -535,7 +578,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error("[Refuter] Falha ao refutar argumento:", err);
       sounds.playError();
-      showToast(`Erro ao refutar argumento: ${err.message}`, "error", 5000);
+      const keyTip = geminiService.hasUserApiKey() ? "" : " Dica: configure sua própria Key do Gemini em ⚙️ para mais usos!";
+      showToast(`Erro ao refutar argumento: ${err.message}.${keyTip}`, "error", 6000);
     } finally {
       showLoading(false);
     }
@@ -716,7 +760,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       msgEl.innerHTML = `
-        <div class="chat-avatar-darwin">👴🏼</div>
+        <div class="chat-avatar-darwin"><img src="assets/darwin-portrait.jpg" alt="Charles Darwin" class="darwin-portrait-img"></div>
         <div class="chat-bubble-darwin">
           <div class="darwin-speaker-header">
             <strong>Charles Darwin</strong>
@@ -739,7 +783,7 @@ document.addEventListener("DOMContentLoaded", () => {
     typingEl.id = id;
     typingEl.className = "chat-msg msg-darwin";
     typingEl.innerHTML = `
-      <div class="chat-avatar-darwin">👴🏼</div>
+      <div class="chat-avatar-darwin"><img src="assets/darwin-portrait.jpg" alt="Charles Darwin" class="darwin-portrait-img"></div>
       <div class="chat-bubble-darwin" style="font-style: italic; color: #fbbf24;">
         <span>Charles Darwin está consultando seus manuscritos e escrevendo... ✍️</span>
       </div>
@@ -759,7 +803,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!dom.darwinChatMessages) return;
     dom.darwinChatMessages.innerHTML = `
       <div class="chat-msg msg-darwin">
-        <div class="chat-avatar-darwin">👴🏼</div>
+        <div class="chat-avatar-darwin"><img src="assets/darwin-portrait.jpg" alt="Charles Darwin" class="darwin-portrait-img"></div>
         <div class="chat-bubble-darwin">
           <div class="darwin-speaker-header">
             <strong>Charles Darwin</strong>
@@ -814,7 +858,8 @@ document.addEventListener("DOMContentLoaded", () => {
       sounds.playSuccess();
     } catch (err) {
       removeDarwinTypingIndicator(typingId);
-      appendDarwinChatMessageUI("darwin", `Perdoe-me, prezado interlocutor, mas minhas anotações não puderam ser recuperadas neste momento (${err.message}). Poderíeis reformular vossa indagação?`);
+      const keyNote = geminiService.hasUserApiKey() ? "" : " (Recomendação: configure vossa própria chave gratuita da API Gemini nas Configurações ⚙️ para maior disponibilidade.)";
+      appendDarwinChatMessageUI("darwin", `Perdoe-me, prezado interlocutor, mas minhas anotações não puderam ser recuperadas neste momento (${err.message}). Poderíeis reformular vossa indagação?${keyNote}`);
       sounds.playError();
     }
   }
@@ -952,6 +997,12 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const generated = await geminiService.generateArgument(state.currentCategory, persona, customTopic);
 
+      if (generated && generated.fora_de_escopo) {
+        sounds.playClick();
+        showToast(`🧬 ${generated.mensagem_recusa}`, "info", 6000);
+        return;
+      }
+
       // Validação ao vivo em tempo real via CrossRef e OpenAlex
       if (window.liveCitationValidator && generated.fontes_cientificas && generated.fontes_cientificas.length > 0) {
         updateLoadingQuote("⚡ Consultando CrossRef & OpenAlex ao vivo para validar ou recuperar DOIs...");
@@ -966,7 +1017,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error("[Criacionator] Falha ao gerar:", err);
       sounds.playError();
-      showToast(`⚠️ Não foi possível conectar à IA agora (${err.message}). Carregamos um clássico!`, "error", 5000);
+      const keyTip = geminiService.hasUserApiKey() ? "" : " Configure sua própria Key do Gemini em ⚙️ para mais usos!";
+      showToast(`⚠️ Não foi possível conectar à IA agora (${err.message}).${keyTip} Carregamos um clássico!`, "error", 6000);
       loadRandomClassic();
     } finally {
       showLoading(false);
@@ -1459,14 +1511,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateAiBadge() {
+    const hasOwnKey = geminiService.hasUserApiKey();
     if (dom.hasAiBadge) {
-      if (geminiService.hasApiKey()) {
+      if (hasOwnKey) {
         dom.hasAiBadge.className = "status-badge active";
-        dom.hasAiBadge.textContent = "✨ Gemini Conectado";
+        dom.hasAiBadge.textContent = "✨ Sua Key Gemini Ativa";
+        dom.hasAiBadge.title = "Usando sua chave pessoal da API Gemini (cota dedicada)";
+      } else if (geminiService.hasApiKey()) {
+        dom.hasAiBadge.className = "status-badge shared-key";
+        dom.hasAiBadge.textContent = "🔑 Gemini Compartilhado • Use sua Key";
+        dom.hasAiBadge.title = "Clique para configurar sua própria chave gratuita do Gemini e ter mais usos";
       } else {
         dom.hasAiBadge.className = "status-badge offline";
         dom.hasAiBadge.textContent = "⚡ Base Local Ativa";
       }
+    }
+    if (dom.geminiKeyTipBanner) {
+      dom.geminiKeyTipBanner.style.display = hasOwnKey ? "none" : "flex";
     }
   }
 

@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/styles.css?v=4.3">
+  <link rel="stylesheet" href="css/styles.css?v=4.5">
 </head>
 <body>
 
@@ -299,6 +299,18 @@
         </button>
       </div>
 
+      <!-- Sugestão de Chave Própria do Gemini para mais usos -->
+      <div id="gemini-key-tip-banner" class="gemini-key-tip-banner">
+        <span class="tip-icon">🔑</span>
+        <span class="tip-text">
+          <strong>Quer mais usos sem limites compartilhados?</strong> Configure sua própria chave gratuita da <strong>API Gemini</strong> (salva 100% localmente no seu navegador via IndexedDB).
+        </span>
+        <div class="tip-actions">
+          <button type="button" class="tip-btn-config js-open-gemini-config">Configurar minha Key</button>
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="tip-link-studio">Criar Key grátis &rarr;</a>
+        </div>
+      </div>
+
       <!-- Filtros por Categoria em Pílulas -->
       <div class="categories-bar">
         <span class="categories-label">Filtrar Tema:</span>
@@ -576,7 +588,7 @@
           
           <div class="refuter-actions-row">
             <div class="refuter-note">
-              <span>🔒 Armazenamento 100% local no seu navegador via <strong>IndexedDB</strong> (Zero-Cloud)</span>
+              <span>🔒 Armazenamento 100% local via <strong>IndexedDB</strong> (Zero-Cloud) &bull; 🔑 <strong>Dica:</strong> <button type="button" class="inline-config-link js-open-gemini-config">use sua própria Key do Gemini</button> para ter mais usos dedicados.</span>
             </div>
             <button id="btn-submit-refutation" class="btn-refute-action">
               <span class="btn-icon">⚡</span>
@@ -600,7 +612,7 @@
         <div class="darwin-study-header">
           <div class="darwin-portrait-wrapper">
             <div class="darwin-avatar-frame">
-              <span class="darwin-cameo-emoji">👴🏼</span>
+              <img src="assets/darwin-portrait.jpg" alt="Retrato de Charles Darwin" class="darwin-portrait-img" loading="lazy">
             </div>
             <div class="darwin-info-col">
               <div class="darwin-title-line">
@@ -649,7 +661,7 @@
           <div id="darwin-chat-messages" class="darwin-chat-messages">
             <!-- Mensagem Inicial de Boas-Vindas de Darwin -->
             <div class="chat-msg msg-darwin">
-              <div class="chat-avatar-darwin">👴🏼</div>
+              <div class="chat-avatar-darwin"><img src="assets/darwin-portrait.jpg" alt="Charles Darwin" class="darwin-portrait-img" loading="lazy"></div>
               <div class="chat-bubble-darwin">
                 <div class="darwin-speaker-header">
                   <strong>Charles Darwin</strong>
@@ -678,6 +690,9 @@
                 <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
               </svg>
             </button>
+          </div>
+          <div class="darwin-key-hint">
+            <span>🔑 <strong>Recomendação:</strong> Para conversas mais longas e sem limite compartilhado com o Sr. Darwin, <button type="button" class="inline-config-link js-open-gemini-config">configure sua própria chave gratuita do Gemini</button> (salva apenas no seu navegador).</span>
           </div>
         </div>
       </div>
@@ -803,7 +818,7 @@
         </div>
 
         <p class="modal-desc-text">
-          O <strong>Criacionator 3000</strong> funciona 100% no seu navegador! Você pode navegar pelos <strong>104 clássicos embutidos</strong> ou conectar sua própria chave para gerar delírios inéditos, refutar argumentos livres ou conversar com Charles Darwin em Down House.
+          O <strong>Criacionator 3000</strong> funciona 100% no seu navegador! A chave padrão compartilhada possui cota limitada entre todos os visitantes — <strong>recomendamos sempre utilizar sua própria chave gratuita do Google AI Studio</strong> para ter cota dedicada e muito mais usos no Gerador IA, no Refutador de Argumentos ao Vivo e no Chat com Charles Darwin.
         </p>
 
         <div class="form-group">
@@ -983,7 +998,7 @@
   <script src="js/darwin-knowledge.js?v=4.3"></script>
   <script src="js/live-validator.js?v=4.3"></script>
   <script src="js/sound.js?v=4.3"></script>
-  <script src="js/gemini.js?v=4.3"></script>
-  <script src="js/app.js?v=4.4"></script>
+  <script src="js/gemini.js?v=4.5"></script>
+  <script src="js/app.js?v=4.5"></script>
 </body>
 </html>

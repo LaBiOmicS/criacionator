@@ -2467,20 +2467,26 @@ body {
 }
 
 .darwin-avatar-frame {
-  width: 64px;
-  height: 64px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
   background: rgba(245, 158, 11, 0.15);
   border: 2px solid #fbbf24;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 0 22px rgba(245, 158, 11, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
-.darwin-cameo-emoji {
-  font-size: 2.2rem;
+.darwin-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  border-radius: 50%;
+  display: block;
 }
 
 .darwin-title-line {
@@ -2656,16 +2662,17 @@ body {
 }
 
 .chat-avatar-darwin {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background: rgba(245, 158, 11, 0.2);
-  border: 1px solid #fbbf24;
+  border: 1.5px solid #fbbf24;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.35rem;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .chat-avatar-user {
@@ -3093,6 +3100,138 @@ body {
 
 .coord-avatar {
   font-size: 2.2rem;
+}
+
+/* ==========================================================================
+   Sugestão de Chave Própria do Gemini & Recusa Educada Fora de Escopo
+   ========================================================================== */
+.status-badge.shared-key {
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+  transition: var(--transition-fast);
+}
+
+.status-badge.shared-key:hover {
+  background: rgba(245, 158, 11, 0.24);
+  border-color: #fbbf24;
+  transform: translateY(-1px);
+}
+
+.gemini-key-tip-banner {
+  max-width: 920px;
+  margin: 0.9rem auto 1.25rem auto;
+  padding: 0.65rem 1.15rem;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(6, 182, 212, 0.1));
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem 0.9rem;
+  flex-wrap: wrap;
+  font-size: 0.84rem;
+  color: #e2e8f0;
+  backdrop-filter: blur(10px);
+}
+
+.gemini-key-tip-banner .tip-icon {
+  font-size: 1.05rem;
+}
+
+.gemini-key-tip-banner .tip-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.tip-btn-config {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.55);
+  color: #fbbf24;
+  font-family: var(--font-display);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.tip-btn-config:hover {
+  background: #f59e0b;
+  color: #0f172a;
+}
+
+.tip-link-studio {
+  color: #38bdf8;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.tip-link-studio:hover {
+  text-decoration: underline;
+}
+
+.inline-config-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #fbbf24;
+  font-weight: 700;
+  font-size: inherit;
+  font-family: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.inline-config-link:hover {
+  color: #38bdf8;
+}
+
+.darwin-key-hint {
+  margin-top: 0.65rem;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: var(--radius-sm);
+  border: 1px dashed rgba(245, 158, 11, 0.25);
+}
+
+.off-topic-refusal-card {
+  margin-top: 1.5rem;
+  padding: 1.35rem 1.6rem;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-left: 4px solid #38bdf8;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.off-topic-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.off-topic-body h4 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  color: #38bdf8;
+  margin-bottom: 0.35rem;
+}
+
+.off-topic-body p {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #e2e8f0;
 }
 
 
