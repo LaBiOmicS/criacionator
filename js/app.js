@@ -80,10 +80,35 @@ document.addEventListener("DOMContentLoaded", () => {
     btnSaveConfig: document.getElementById("btn-save-config"),
     btnTestKey: document.getElementById("btn-test-key"),
     btnClearKey: document.getElementById("btn-clear-key"),
+    btnClearAllDb: document.getElementById("btn-clear-all-db"),
     configFeedback: document.getElementById("config-feedback"),
     catalogGrid: document.getElementById("catalog-grid"),
     favoritesGrid: document.getElementById("favorites-grid"),
     closeModalBtns: document.querySelectorAll(".btn-close-modal"),
+
+    // Navegação Acadêmica por Módulos
+    academicTabs: document.querySelectorAll(".academic-tab-btn"),
+    moduleArena: document.getElementById("module-arena"),
+    moduleRefuter: document.getElementById("module-refuter"),
+    moduleDarwin: document.getElementById("module-darwin"),
+
+    // Refutador Customizado
+    customArgumentText: document.getElementById("custom-argument-text"),
+    btnSubmitRefutation: document.getElementById("btn-submit-refutation"),
+    customRefutationResult: document.getElementById("custom-refutation-result"),
+    quickChips: document.querySelectorAll(".quick-chip"),
+
+    // Gabinete de Charles Darwin
+    darwinChatMessages: document.getElementById("darwin-chat-messages"),
+    darwinUserInput: document.getElementById("darwin-user-input"),
+    btnDarwinSend: document.getElementById("btn-darwin-send"),
+    btnDarwinClear: document.getElementById("btn-darwin-clear"),
+    darwinChips: document.querySelectorAll(".darwin-chip"),
+    btnOpenChapterReader: document.getElementById("btn-open-chapter-reader"),
+    modalChapterReader: document.getElementById("modal-chapter-reader"),
+    selectDarwinChapter: document.getElementById("select-darwin-chapter"),
+    chapterReaderBody: document.getElementById("chapter-reader-body"),
+    btnDownloadCurrentChapter: document.getElementById("btn-download-current-chapter"),
 
     // Marcos da Timeline Evolutiva
     evoMilestones: document.querySelectorAll(".evo-milestone"),
@@ -112,20 +137,35 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   // Inicialização
-  function init() {
+  async function init() {
     setupEventListeners();
     updateSoundButton();
     updateAiBadge();
-    if (dom.statsClassicCount && typeof ARGUMENTOS_CLASSICOS !== "undefined") {
-      dom.statsClassicCount.textContent = ARGUMENTOS_CLASSICOS.length;
+
+    // Inicializa persistência local via IndexedDB
+    if (window.storageDB) {
+      try {
+        await window.storageDB.init();
+        const dbKey = await window.storageDB.getApiKey();
+        const dbModel = await window.storageDB.getModel();
+        if (dom.inputApiKey && dbKey) dom.inputApiKey.value = dbKey;
+        if (dom.selectModel && dbModel) dom.selectModel.value = dbModel;
+
+        // Carrega histórico do Chat com Darwin do IndexedDB
+        await loadDarwinChatFromStorage();
+      } catch (e) {
+        console.warn("[App] Falha ao carregar do IndexedDB:", e);
+      }
+    } else {
+      if (dom.inputApiKey) dom.inputApiKey.value = geminiService.getApiKey();
+      if (dom.selectModel) dom.selectModel.value = geminiService.getModel();
     }
 
-    // Carregar configurações salvas
-    if (dom.inputApiKey) {
-      dom.inputApiKey.value = geminiService.getApiKey();
-    }
-    if (dom.selectModel) {
-      dom.selectModel.value = geminiService.getModel();
+    // Inicializa o leitor de capítulos de Darwin
+    initDarwinChapterReader();
+
+    if (dom.statsClassicCount && typeof ARGUMENTOS_CLASSICOS !== "undefined") {
+      dom.statsClassicCount.textContent = ARGUMENTOS_CLASSICOS.length;
     }
 
     // Carrega o primeiro argumento clássico aleatório
@@ -279,13 +319,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Salvar Chave API
-    dom.btnSaveConfig.addEventListener("click", () => {
+    // Salvar Chave API e Modelo no IndexedDB
+    dom.btnSaveConfig.addEventListener("click", async () => {
       sounds.playClick();
-      geminiService.setApiKey(dom.inputApiKey.value);
-      geminiService.setModel(dom.selectModel.value);
+      await geminiService.setApiKey(dom.inputApiKey.value);
+      await geminiService.setModel(dom.selectModel.value);
       updateAiBadge();
-      showConfigFeedback("Configurações salvas com sucesso!", "success");
+      showConfigFeedback("Configurações salvas localmente no IndexedDB!", "success");
       setTimeout(() => closeAllModals(), 1200);
     });
 
@@ -304,13 +344,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Limpar Chave API
-    dom.btnClearKey.addEventListener("click", () => {
+    dom.btnClearKey.addEventListener("click", async () => {
       sounds.playClick();
       dom.inputApiKey.value = "";
-      geminiService.setApiKey("");
+      await geminiService.setApiKey("");
       updateAiBadge();
       showConfigFeedback("Chave removida.", "info");
     });
+
+    // Limpar Todo o Banco IndexedDB
+    if (dom.btnClearAllDb) {
+      dom.btnClearAllDb.addEventListener("click", async () => {
+        if (confirm("Deseja realmente limpar todos os dados locais (chave do Gemini, conversas com Darwin e histórico) salvos no IndexedDB?")) {
+          if (window.storageDB) await window.storageDB.clearAllData();
+          await geminiService.setApiKey("");
+          if (dom.inputApiKey) dom.inputApiKey.value = "";
+          updateAiBadge();
+          resetDarwinChatUI();
+          showConfigFeedback("Todos os dados locais do IndexedDB foram apagados.", "info");
+          showToast("Dados do IndexedDB limpos.", "info");
+        }
+      });
+    }
 
     // Quiz Reveal All
     if (dom.btnQuizRevealAll) {
@@ -326,6 +381,480 @@ document.addEventListener("DOMContentLoaded", () => {
       dom.btnRevalidateLive.addEventListener("click", () => {
         handleRevalidateSourcesLive();
       });
+    }
+
+    // Navegação por Abas Acadêmicas
+    if (dom.academicTabs) {
+      dom.academicTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          sounds.playClick();
+          switchAcademicModule(tab.dataset.target);
+        });
+      });
+    }
+
+    // Refutador Customizado: Chips de Testes Rápidos
+    if (dom.quickChips) {
+      dom.quickChips.forEach(chip => {
+        chip.addEventListener("click", () => {
+          sounds.playClick();
+          if (dom.customArgumentText) {
+            dom.customArgumentText.value = chip.dataset.sample || "";
+            dom.customArgumentText.focus();
+          }
+        });
+      });
+    }
+
+    // Refutador Customizado: Submissão do Argumento
+    if (dom.btnSubmitRefutation) {
+      dom.btnSubmitRefutation.addEventListener("click", () => {
+        handleSubmitCustomRefutation();
+      });
+    }
+
+    // Gabinete de Charles Darwin: Chat
+    if (dom.btnDarwinSend) {
+      dom.btnDarwinSend.addEventListener("click", () => {
+        handleSendDarwinMessage();
+      });
+    }
+    if (dom.darwinUserInput) {
+      dom.darwinUserInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          handleSendDarwinMessage();
+        }
+      });
+    }
+    if (dom.btnDarwinClear) {
+      dom.btnDarwinClear.addEventListener("click", async () => {
+        if (confirm("Deseja reiniciar a conversa e limpar o histórico local com Charles Darwin?")) {
+          if (window.storageDB) await window.storageDB.clearDarwinChat();
+          resetDarwinChatUI();
+          showToast("Conversa reiniciada com Charles Darwin.", "info");
+        }
+      });
+    }
+    if (dom.darwinChips) {
+      dom.darwinChips.forEach(chip => {
+        chip.addEventListener("click", () => {
+          sounds.playClick();
+          if (dom.darwinUserInput) {
+            dom.darwinUserInput.value = chip.dataset.question || "";
+            handleSendDarwinMessage();
+          }
+        });
+      });
+    }
+  }
+
+  // Alterna entre abas acadêmicas (Arena, Refutador, Darwin, Catálogo)
+  function switchAcademicModule(targetId) {
+    if (dom.academicTabs) {
+      dom.academicTabs.forEach(tab => {
+        if (tab.dataset.target === targetId) {
+          tab.classList.add("active");
+        } else {
+          tab.classList.remove("active");
+        }
+      });
+    }
+
+    if (dom.moduleArena) dom.moduleArena.classList.add("hidden");
+    if (dom.moduleRefuter) dom.moduleRefuter.classList.add("hidden");
+    if (dom.moduleDarwin) dom.moduleDarwin.classList.add("hidden");
+
+    if (targetId === "module-arena" && dom.moduleArena) {
+      dom.moduleArena.classList.remove("hidden");
+    } else if (targetId === "module-refuter" && dom.moduleRefuter) {
+      dom.moduleRefuter.classList.remove("hidden");
+    } else if (targetId === "module-darwin" && dom.moduleDarwin) {
+      dom.moduleDarwin.classList.remove("hidden");
+      if (dom.darwinChatMessages) {
+        dom.darwinChatMessages.scrollTop = dom.darwinChatMessages.scrollHeight;
+      }
+    } else if (targetId === "module-catalog") {
+      openModal(dom.modalCatalog);
+      if (dom.academicTabs) {
+        dom.academicTabs.forEach(t => {
+          if (t.dataset.target === "module-arena") t.classList.add("active");
+          else t.classList.remove("active");
+        });
+      }
+      if (dom.moduleArena) dom.moduleArena.classList.remove("hidden");
+    }
+  }
+
+  // Submissão do Refutador de Argumentos ao Vivo
+  async function handleSubmitCustomRefutation() {
+    const text = dom.customArgumentText ? dom.customArgumentText.value.trim() : "";
+    if (!text || text.length < 5) {
+      sounds.playError();
+      showToast("Por favor, digite ou cole um argumento com pelo menos 5 caracteres.", "warning");
+      return;
+    }
+
+    if (!geminiService.hasApiKey()) {
+      sounds.playError();
+      openModal(dom.modalConfig);
+      showConfigFeedback("Insira sua chave de API do Gemini para refutar argumentos ao vivo!", "warning");
+      return;
+    }
+
+    showLoading(true, "Analisando falácia lógica e consultando biologia evolutiva com Gemini...");
+    try {
+      const result = await geminiService.refuteCustomArgument(text);
+
+      // Validação ao vivo das fontes geradas
+      if (window.liveCitationValidator && result.fontes_cientificas?.length > 0) {
+        updateLoadingQuote("⚡ Auditando fontes geradas em tempo real com CrossRef e OpenAlex...");
+        await liveCitationValidator.validateArgumentSources(result, (cur, tot, msg) => {
+          updateLoadingQuote(`⚡ ${msg}`);
+        });
+      }
+
+      // Salva no IndexedDB
+      if (window.storageDB) {
+        await window.storageDB.saveCustomRefutation(result);
+      }
+
+      // Renderiza resultado
+      displayCustomRefutation(result);
+      sounds.playScienceLaser();
+      showToast("⚔️ Argumento refutado e fontes validadas ao vivo com sucesso!", "success", 4500);
+    } catch (err) {
+      console.error("[Refuter] Falha ao refutar argumento:", err);
+      sounds.playError();
+      showToast(`Erro ao refutar argumento: ${err.message}`, "error", 5000);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  // Renderiza o resultado customizado refutado
+  function displayCustomRefutation(item) {
+    if (!dom.customRefutationResult) return;
+    dom.customRefutationResult.classList.remove("hidden");
+
+    let sourcesHtml = "";
+    if (Array.isArray(item.fontes_cientificas) && item.fontes_cientificas.length > 0) {
+      item.fontes_cientificas.forEach(src => {
+        const rawUrl = src.doi_ou_link || "";
+        const isDoi = src.doi || rawUrl.includes("10.");
+        const cleanDoi = src.doi || (rawUrl.includes("doi.org/") ? rawUrl.split("doi.org/")[1] : rawUrl);
+        const doiUrl = isDoi ? `https://doi.org/${cleanDoi}` : null;
+        const scholarUrl = src.scholar_url || `https://scholar.google.com/scholar?q=${encodeURIComponent(`${src.autor_ano || ""} ${src.titulo || ""}`)}`;
+
+        let btns = "";
+        if (doiUrl) {
+          btns += `<a class="citation-btn btn-doi" href="${escapeHtml(doiUrl)}" target="_blank" rel="noopener noreferrer"><span>DOI Oficial ↗</span></a>`;
+        }
+        if (src.oa_url) {
+          btns += `<a class="citation-btn btn-oa" href="${escapeHtml(src.oa_url)}" target="_blank" rel="noopener noreferrer"><span>PDF Aberto (OA) ↗</span></a>`;
+        }
+        btns += `<a class="citation-btn btn-scholar" href="${escapeHtml(scholarUrl)}" target="_blank" rel="noopener noreferrer"><span>Google Scholar ↗</span></a>`;
+
+        let badge = "";
+        if (src.badge_text) {
+          badge = `<span class="badge-live-tag badge-live-verified">${escapeHtml(src.badge_text)}</span>`;
+        } else {
+          badge = `<span class="badge-live-tag badge-live-verified">✓ Validado ao Vivo (CrossRef/OpenAlex)</span>`;
+        }
+
+        sourcesHtml += `
+          <li class="citation-item">
+            <div class="citation-meta">
+              <span class="citation-authors">${escapeHtml(src.autor_ano || "Literatura Biológica")}</span>
+              <span class="citation-sep">&bull;</span>
+              <span class="citation-journal">${escapeHtml(src.periodico || "Periódico Revisado por Pares")}</span>
+            </div>
+            <div class="citation-title">&ldquo;${escapeHtml(src.titulo || "Estudo sobre Evolução")}&rdquo;</div>
+            <div class="citation-live-status">${badge}</div>
+            <div class="citation-actions">${btns}</div>
+          </li>
+        `;
+      });
+    }
+
+    dom.customRefutationResult.innerHTML = `
+      <div class="duel-arena-wrapper fade-in" style="margin-top: 1.5rem;">
+        <div class="duel-arena">
+          <article class="duel-panel creation-panel">
+            <div class="panel-header creation-header">
+              <div class="panel-tag-group">
+                <span class="panel-pill pill-creation">📢 ARGUMENTO SUBMETIDO</span>
+                <span class="badge-category">${escapeHtml(item.falacia_logica || "Falácia Lógica")}</span>
+              </div>
+            </div>
+            <div class="panel-body">
+              <h3 class="panel-title">${escapeHtml(item.titulo)}</h3>
+              <div class="argument-card">
+                <div class="quote-mark left">&ldquo;</div>
+                <p class="argument-text">${escapeHtml(item.argumento_criacionista)}</p>
+                <div class="quote-mark right">&rdquo;</div>
+              </div>
+              <div class="analogy-card">
+                <div class="analogy-header">
+                  <span class="analogy-icon">🤡</span>
+                  <span class="analogy-label">Analogia Equivalente:</span>
+                </div>
+                <p class="analogy-text">&ldquo;${escapeHtml(item.analogia_absurda || "")}&rdquo;</p>
+              </div>
+              <div class="delirium-meter-box">
+                <div class="delirium-meter-header">
+                  <span class="delirium-title">NÍVEL DE DELÍRIO:</span>
+                  <span class="delirium-value">${item.nivel_delirio || 9}/10</span>
+                </div>
+                <div class="delirium-glow-bar">
+                  <div class="delirium-glow-fill" style="width: ${(item.nivel_delirio || 9) * 10}%;"></div>
+                </div>
+                <p class="delirium-verdict">${escapeHtml(item.rotulo_delirio || "Nível elevado de delírio")}</p>
+              </div>
+            </div>
+          </article>
+
+          <div class="arena-vs-divider">
+            <div class="vs-glow-line"></div>
+            <div class="vs-circle"><span>VS</span></div>
+          </div>
+
+          <article class="duel-panel science-panel">
+            <div class="panel-header science-header">
+              <div class="panel-tag-group">
+                <span class="panel-pill pill-science">🔬 A CIÊNCIA REAL & REVISÃO POR PARES</span>
+                <span class="badge-fallacy">${escapeHtml(item.falacia_logica || "Falácia Formal")}</span>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="debunk-section">
+                <div class="debunk-header">
+                  <span class="debunk-icon">🤦‍♂️</span>
+                  <h4>Por que é um erro absurdo:</h4>
+                </div>
+                <p class="debunk-text">${escapeHtml(item.por_que_e_idiota)}</p>
+              </div>
+
+              <div class="debunk-section color-cyan">
+                <div class="debunk-header">
+                  <span class="debunk-icon">🧬</span>
+                  <h4>O que a Biologia e a Geologia dizem:</h4>
+                </div>
+                <p class="science-text">${escapeHtml(item.a_ciencia_real)}</p>
+              </div>
+
+              <div class="citations-card">
+                <div class="citations-header">
+                  <div class="citations-header-title">
+                    <span class="citations-icon">📚</span>
+                    <h4>Literatura Científica Validada ao Vivo:</h4>
+                  </div>
+                </div>
+                <ul class="citations-list">${sourcesHtml}</ul>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    `;
+
+    dom.customRefutationResult.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // Carrega histórico de mensagens do Darwin a partir do IndexedDB
+  async function loadDarwinChatFromStorage() {
+    if (!window.storageDB || !dom.darwinChatMessages) return;
+    try {
+      const messages = await window.storageDB.getDarwinMessages(30);
+      if (messages && messages.length > 0) {
+        dom.darwinChatMessages.innerHTML = "";
+        for (const msg of messages) {
+          appendDarwinChatMessageUI(msg.role, msg.content, msg.chapter_ref);
+        }
+      }
+    } catch (e) {
+      console.warn("[DarwinChat] Falha ao carregar do IndexedDB:", e);
+    }
+  }
+
+  function appendDarwinChatMessageUI(role, content, chapterRef = null) {
+    if (!dom.darwinChatMessages) return;
+
+    const msgEl = document.createElement("div");
+    msgEl.className = `chat-msg msg-${role}`;
+
+    if (role === "user") {
+      msgEl.innerHTML = `
+        <div class="chat-avatar-user">👤</div>
+        <div class="chat-bubble-user">
+          <p>${escapeHtml(content)}</p>
+        </div>
+      `;
+    } else {
+      let citationHtml = "";
+      if (chapterRef) {
+        citationHtml = `
+          <div class="darwin-citation-pill">
+            <span>📖 Citando: ${escapeHtml(chapterRef)}</span>
+          </div>
+        `;
+      } else {
+        citationHtml = `
+          <div class="darwin-citation-pill">
+            <span>📖 Embasado em 'On the Origin of Species' (1859)</span>
+          </div>
+        `;
+      }
+
+      msgEl.innerHTML = `
+        <div class="chat-avatar-darwin">👴🏼</div>
+        <div class="chat-bubble-darwin">
+          <div class="darwin-speaker-header">
+            <strong>Charles Darwin</strong>
+            <span class="darwin-role">Down House, Kent (1859)</span>
+          </div>
+          <p>${escapeHtml(content).replace(/\n\n/g, "</p><p>")}</p>
+          ${citationHtml}
+        </div>
+      `;
+    }
+
+    dom.darwinChatMessages.appendChild(msgEl);
+    dom.darwinChatMessages.scrollTop = dom.darwinChatMessages.scrollHeight;
+  }
+
+  function appendDarwinTypingIndicator() {
+    if (!dom.darwinChatMessages) return null;
+    const id = `typing-${Date.now()}`;
+    const typingEl = document.createElement("div");
+    typingEl.id = id;
+    typingEl.className = "chat-msg msg-darwin";
+    typingEl.innerHTML = `
+      <div class="chat-avatar-darwin">👴🏼</div>
+      <div class="chat-bubble-darwin" style="font-style: italic; color: #fbbf24;">
+        <span>Charles Darwin está consultando seus manuscritos e escrevendo... ✍️</span>
+      </div>
+    `;
+    dom.darwinChatMessages.appendChild(typingEl);
+    dom.darwinChatMessages.scrollTop = dom.darwinChatMessages.scrollHeight;
+    return id;
+  }
+
+  function removeDarwinTypingIndicator(id) {
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  function resetDarwinChatUI() {
+    if (!dom.darwinChatMessages) return;
+    dom.darwinChatMessages.innerHTML = `
+      <div class="chat-msg msg-darwin">
+        <div class="chat-avatar-darwin">👴🏼</div>
+        <div class="chat-bubble-darwin">
+          <div class="darwin-speaker-header">
+            <strong>Charles Darwin</strong>
+            <span class="darwin-role">Down House, Kent (1859)</span>
+          </div>
+          <p>Meu estimado amigo da ciência. É com supremo prazer que o recebo em meu gabinete de estudos. Dediquei duas décadas à compilação de fatos desde o regresso do <em>HMS Beagle</em> para publicar <em>'A Origem das Espécies'</em>. Qual aspecto de minhas observações ou da teoria da descendência com modificação desejas debater?</p>
+          <div class="darwin-citation-pill">
+            <span>📖 Embasado em 'On the Origin of Species' (John Murray, 1859)</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function handleSendDarwinMessage() {
+    const input = dom.darwinUserInput;
+    if (!input) return;
+    const query = input.value.trim();
+    if (!query) return;
+
+    if (!geminiService.hasApiKey()) {
+      sounds.playError();
+      openModal(dom.modalConfig);
+      showConfigFeedback("Insira sua chave de API do Gemini para conversar com Charles Darwin!", "warning");
+      return;
+    }
+
+    input.value = "";
+    appendDarwinChatMessageUI("user", query);
+
+    if (window.storageDB) {
+      await window.storageDB.saveDarwinMessage({ role: "user", content: query });
+    }
+
+    const contextInfo = typeof findDarwinContext === "function" ? findDarwinContext(query) : null;
+    const typingId = appendDarwinTypingIndicator();
+
+    try {
+      const history = window.storageDB ? await window.storageDB.getDarwinMessages(10) : [];
+      const reply = await geminiService.chatWithDarwin(query, history, contextInfo);
+
+      removeDarwinTypingIndicator(typingId);
+      appendDarwinChatMessageUI("darwin", reply.content, reply.chapter_ref);
+
+      if (window.storageDB) {
+        await window.storageDB.saveDarwinMessage({
+          role: "darwin",
+          content: reply.content,
+          chapter_ref: reply.chapter_ref
+        });
+      }
+      sounds.playSuccess();
+    } catch (err) {
+      removeDarwinTypingIndicator(typingId);
+      appendDarwinChatMessageUI("darwin", `Perdoe-me, prezado interlocutor, mas minhas anotações não puderam ser recuperadas neste momento (${err.message}). Poderíeis reformular vossa indagação?`);
+      sounds.playError();
+    }
+  }
+
+  // Inicializa o leitor de capítulos de Darwin
+  function initDarwinChapterReader() {
+    if (!dom.selectDarwinChapter) return;
+    dom.selectDarwinChapter.innerHTML = "";
+
+    if (typeof DARWIN_CHAPTERS !== "undefined" && Array.isArray(DARWIN_CHAPTERS)) {
+      DARWIN_CHAPTERS.forEach(ch => {
+        const opt = document.createElement("option");
+        opt.value = ch.filename;
+        opt.textContent = `${ch.title_pt} (${ch.word_count.toLocaleString("pt-BR")} palavras)`;
+        dom.selectDarwinChapter.appendChild(opt);
+      });
+
+      dom.selectDarwinChapter.addEventListener("change", () => {
+        loadDarwinChapter(dom.selectDarwinChapter.value);
+      });
+
+      if (DARWIN_CHAPTERS.length > 0) {
+        loadDarwinChapter(DARWIN_CHAPTERS[0].filename);
+      }
+    }
+
+    if (dom.btnOpenChapterReader) {
+      dom.btnOpenChapterReader.addEventListener("click", () => {
+        openModal(dom.modalChapterReader);
+      });
+    }
+  }
+
+  async function loadDarwinChapter(filename) {
+    if (!dom.chapterReaderBody) return;
+    dom.chapterReaderBody.innerHTML = `<div class="reader-loading">Carregando capítulo ${escapeHtml(filename)}...</div>`;
+
+    if (dom.btnDownloadCurrentChapter) {
+      dom.btnDownloadCurrentChapter.href = `darwin/chapters/${filename}`;
+      dom.btnDownloadCurrentChapter.setAttribute("download", filename);
+    }
+
+    try {
+      const res = await fetch(`darwin/chapters/${filename}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      dom.chapterReaderBody.textContent = text;
+    } catch (err) {
+      dom.chapterReaderBody.innerHTML = `<p class="text-danger">Não foi possível carregar o arquivo do capítulo (${err.message}). Você pode baixá-lo diretamente pelo link acima.</p>`;
     }
   }
 
