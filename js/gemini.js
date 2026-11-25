@@ -11,7 +11,7 @@ class GeminiService {
     this.storageKey = "criacionator_gemini_key";
     this.modelStorageKey = "criacionator_gemini_model";
     this.defaultModel = "gemini-2.5-flash";
-    this.fallbackModel = "gemini-1.5-flash";
+    this.fallbackModels = ["gemini-3.5-flash", "gemini-3.5-flash-lite"];
   }
 
   getApiKey() {
@@ -49,37 +49,54 @@ class GeminiService {
     const key = keyToTest || this.getApiKey();
     if (!key) throw new Error("Nenhuma chave informada.");
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${this.getModel()}:generateContent?key=${encodeURIComponent(key)}`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: "Diga apenas a palavra 'OK' em JSON: {\"status\": \"OK\"}" }]
-          }
-        ],
-        generationConfig: {
-          responseMimeType: "application/json",
-          temperature: 0.1
-        }
-      })
-    });
+    const candidateModels = Array.from(new Set([
+      this.getModel(),
+      "gemini-2.5-flash",
+      "gemini-3.5-flash",
+      "gemini-3.5-flash-lite"
+    ]));
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      const message = errorData?.error?.message || `Erro HTTP ${response.status}: ${response.statusText}`;
-      throw new Error(message);
+    let lastError = null;
+    for (const model of candidateModels) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: "user",
+                parts: [{ text: "Diga apenas a palavra 'OK' em JSON: {\"status\": \"OK\"}" }]
+              }
+            ],
+            generationConfig: {
+              responseMimeType: "application/json",
+              temperature: 0.1
+            }
+          })
+        });
+
+        if (response.ok) {
+          this.setModel(model);
+          return { success: true, model };
+        }
+
+        const errorData = await response.json().catch(() => ({}));
+        const message = errorData?.error?.message || `Erro HTTP ${response.status}`;
+        lastError = new Error(message);
+      } catch (err) {
+        lastError = err;
+      }
     }
 
-    return true;
+    throw lastError || new Error("Não foi possível conectar à API Gemini.");
   }
 
   async generateArgument(category = "any", persona = "pastor_zap", customTopic = "") {
     const apiKey = this.getApiKey();
     if (!apiKey) {
-      throw new Error("Chave de API do Gemini não configurada. Configure sua chave nas opções ou use os argumentos clássicos embutidos!");
+      throw new Error("Chave de API do Gemini não configurada.");
     }
 
     const personas = {
@@ -115,7 +132,7 @@ Você DEVE responder EXCLUSIVAMENTE em formato JSON puro aderente ao seguinte es
   "argumento_criacionista": "Texto do argumento no estilo da persona selecionada...",
   "analogia_absurda": "Uma analogia hilária e absurda usada pelo criacionista...",
   "citacao_ou_versiculo": "Citação bíblica fora de contexto ou bordão memorável...",
-  "nivel_delirio": 9.3, // número float entre 7.0 e 10.0
+  "nivel_delirio": 9.3,
   "rotulo_delirio": "Rótulo sarcástico para o nível de delírio",
   "falacia_logica": "Nome formal da(s) falácia(s) lógica(s)",
   "por_que_e_idiota": "Explicação afiada, bem-humorada e sarcástica do porquê o raciocínio não faz nenhum sentido...",
@@ -142,72 +159,83 @@ Você DEVE responder EXCLUSIVAMENTE em formato JSON puro aderente ao seguinte es
 }
 `;
 
-    const model = this.getModel();
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const candidateModels = Array.from(new Set([
+      this.getModel(),
+      "gemini-2.5-flash",
+      "gemini-3.5-flash",
+      "gemini-3.5-flash-lite"
+    ]));
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [{ text: prompt }]
+    let lastError = null;
+
+    for (const model of candidateModels) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: "user",
+                parts: [{ text: prompt }]
+              }
+            ],
+            generationConfig: {
+              responseMimeType: "application/json",
+              temperature: 0.85
             }
-          ],
-          generationConfig: {
-            responseMimeType: "application/json",
-            temperature: 0.9,
-            maxOutputTokens: 2500
-          }
-        })
-      });
+          })
+        });
 
-      if (!response.ok) {
-        const errorBody = await response.json().catch(() => ({}));
-        const status = response.status;
-        const msg = errorBody?.error?.message || response.statusText;
-
-        if (status === 400 || status === 403) {
-          throw new Error(`Erro na API Gemini (${status}): Chave inválida ou permissão negada. Verifique sua chave no menu de configurações.`);
-        } else if (status === 429) {
-          throw new Error("Limite de requisições por minuto excedido (Rate Limit) na API Gemini gratuita. Aguarde 30 segundos e tente novamente!");
-        } else {
-          throw new Error(`Erro na API Gemini (${status}): ${msg}`);
+        if (response.status === 503 || response.status === 429) {
+          console.warn(`[Gemini] Modelo ${model} temporariamente ocupado (${response.status}). Tentando modelo alternativo...`);
+          await new Promise(r => setTimeout(r, 800));
+          continue;
         }
+
+        if (!response.ok) {
+          const errorBody = await response.json().catch(() => ({}));
+          const msg = errorBody?.error?.message || response.statusText;
+          throw new Error(`Erro (${response.status}): ${msg}`);
+        }
+
+        const data = await response.json();
+        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!rawText) {
+          throw new Error("A API Gemini não retornou nenhum texto na resposta.");
+        }
+
+        let cleaned = rawText.trim();
+        if (cleaned.startsWith("```json")) {
+          cleaned = cleaned.replace(/^```json/, "").replace(/```$/, "").trim();
+        } else if (cleaned.startsWith("```")) {
+          cleaned = cleaned.replace(/^```/, "").replace(/```$/, "").trim();
+        }
+
+        const parsed = JSON.parse(cleaned);
+
+        if (!parsed.titulo || !parsed.argumento_criacionista || !parsed.a_ciencia_real) {
+          throw new Error("A resposta gerada não conteve os campos obrigatórios esperados.");
+        }
+
+        parsed.id = `ia-${Date.now()}`;
+        parsed.isGeneratedByAI = true;
+        parsed.modelo_usado = model;
+
+        // Atualiza modelo funcional no cache
+        this.setModel(model);
+
+        return parsed;
+      } catch (err) {
+        lastError = err;
+        console.warn(`[Gemini] Falha ao tentar modelo ${model}:`, err.message);
       }
-
-      const data = await response.json();
-      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-      if (!rawText) {
-        throw new Error("A API Gemini não retornou nenhum texto na resposta.");
-      }
-
-      // Limpa possíveis marcadores ```json se retornados
-      let cleaned = rawText.trim();
-      if (cleaned.startsWith("```json")) {
-        cleaned = cleaned.replace(/^```json/, "").replace(/```$/, "").trim();
-      } else if (cleaned.startsWith("```")) {
-        cleaned = cleaned.replace(/^```/, "").replace(/```$/, "").trim();
-      }
-
-      const parsed = JSON.parse(cleaned);
-
-      // Validação mínima de sanidade
-      if (!parsed.titulo || !parsed.argumento_criacionista || !parsed.a_ciencia_real) {
-        throw new Error("A resposta gerada pela IA não conteve os campos obrigatórios esperados.");
-      }
-
-      parsed.id = `ia-${Date.now()}`;
-      parsed.isGeneratedByAI = true;
-
-      return parsed;
-    } catch (err) {
-      console.error("[Criacionator] Erro ao chamar Gemini API:", err);
-      throw err;
     }
+
+    throw lastError || new Error("Não foi possível gerar com a API Gemini no momento.");
   }
 }
 

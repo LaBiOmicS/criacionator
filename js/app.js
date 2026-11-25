@@ -270,13 +270,33 @@ document.addEventListener("DOMContentLoaded", () => {
       const generated = await geminiService.generateArgument(state.currentCategory, persona, customTopic);
       displayArgument(generated);
       sounds.playScienceLaser();
+      showToast(`✨ Argumento novo gerado por IA com sucesso!`, "success");
     } catch (err) {
+      console.error("[Criacionator] Falha ao gerar:", err);
       sounds.playError();
-      alert(`Falha ao gerar com a IA: ${err.message}\n\nExibindo um argumento clássico da nossa base embutida!`);
+      showToast(`⚠️ Não foi possível conectar à IA agora (${err.message}). Carregamos um clássico!`, "error", 5000);
       loadRandomClassic();
     } finally {
       showLoading(false);
     }
+  }
+
+  // Notificações Toast no canto da tela
+  function showToast(message, type = "info", duration = 4000) {
+    const container = document.getElementById("toast-container");
+    if (!container) return;
+
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<span>${escapeHtml(message)}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+      toast.style.opacity = "0";
+      toast.style.transform = "translateY(10px)";
+      setTimeout(() => toast.remove(), 400);
+    }, duration);
   }
 
   // Exibe o argumento selecionado na UI
