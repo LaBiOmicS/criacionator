@@ -75,6 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
     modalConfig: document.getElementById("modal-config"),
     modalCatalog: document.getElementById("modal-catalog"),
     modalFavorites: document.getElementById("modal-favorites"),
+    modalAboutMission: document.getElementById("modal-about-mission"),
+    btnOpenAbout: document.getElementById("btn-open-about"),
     inputApiKey: document.getElementById("input-api-key"),
     selectModel: document.getElementById("select-model"),
     btnSaveConfig: document.getElementById("btn-save-config"),
@@ -305,6 +307,12 @@ document.addEventListener("DOMContentLoaded", () => {
       renderFavorites();
       openModal(dom.modalFavorites);
     });
+    if (dom.btnOpenAbout && dom.modalAboutMission) {
+      dom.btnOpenAbout.addEventListener("click", () => {
+        sounds.playClick();
+        openModal(dom.modalAboutMission);
+      });
+    }
 
     dom.closeModalBtns.forEach(btn => {
       btn.addEventListener("click", () => {

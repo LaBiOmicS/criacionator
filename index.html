@@ -57,6 +57,13 @@
           <span class="btn-catalog-label">Catálogo (104)</span>
         </button>
 
+        <button id="btn-open-about" class="btn-header-cta btn-about-cta" aria-label="Objetivo Acadêmico & Divulgação Científica" title="Objetivo Acadêmico & Divulgação Científica">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+          </svg>
+          <span class="btn-catalog-label">Objetivo Acadêmico</span>
+        </button>
+
         <button id="btn-open-favorites" class="btn-icon" aria-label="Ver Favoritos Salvos" title="Meus Favoritos">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -108,6 +115,18 @@
         </p>
         <p class="epigraph-punchline">
           &ldquo;...e nada no criacionismo faz sentido, nem mesmo à luz de uma lâmpada fluorescente de 15 watts.&rdquo;
+        </p>
+      </div>
+
+      <!-- Manifesto Acadêmico & Nota de Divulgação Científica -->
+      <div class="academic-mission-card">
+        <div class="mission-header">
+          <span class="mission-icon">🎓</span>
+          <span class="mission-title">Propósito Acadêmico & Divulgação Científica</span>
+          <span class="mission-badge">LaBiOmicS &bull; UMC</span>
+        </div>
+        <p class="mission-text">
+          O <strong>Criacionator 3000</strong> é um projeto educacional desenvolvido no <strong>Laboratório de Bioinformática e Ciências Ômicas (LaBiOmicS) da Universidade de Mogi das Cruzes</strong>. A ferramenta adota propositalmente uma <strong>linguagem descontraída, bem-humorada e satírica</strong> como instrumento pedagógico para quebrar dogmas, engajar o público e desmistificar temas complexos — tendo como <strong>objetivo inegociável o ensino científico de excelência</strong>. Todas as refutações são respaldadas pelo método empírico, filogenia molecular e artigos revisados por pares (<em>peer-reviewed</em>) de periódicos de referência como <em>Nature</em>, <em>Science</em> e <em>PNAS</em>, auditadas ao vivo nas APIs do CrossRef e OpenAlex.
         </p>
       </div>
 
@@ -669,15 +688,21 @@
           <div class="inst-info">
             <div class="inst-lab-badge">
               <span class="inst-lab-icon">🧬</span>
-              <span>Laboratório de Bioinformática e Ciências Ômicas</span>
+              <span>Laboratório de Bioinformática e Ciências Ômicas &bull; UMC</span>
             </div>
             <h3 class="inst-title"><span class="inst-line-nowrap">Desenvolvido no LaBiOmicS</span> <span class="inst-sep">•</span> <span class="inst-line-nowrap">Universidade de Mogi das Cruzes</span></h3>
             <p class="inst-coord">
               <strong>Coordenação:</strong> Prof. Dr. Fabiano Bezerra Menegidio &bull; <a href="mailto:fabianomenegidio@umc.br" class="inst-email">fabianomenegidio@umc.br</a>
             </p>
-            <p class="inst-desc">
-              O <em>Criacionator 3000</em> utiliza o humor satírico e a cultura de dados abertos para aproximar o público do método científico, defendendo o ensino da teoria da evolução, genética populacional e geologia histórica através de referências primárias verificadas.
-            </p>
+            <div class="inst-mission-block">
+              <h4>🎯 Objetivo Acadêmico e Metodologia de Divulgação Científica:</h4>
+              <p class="inst-desc">
+                O projeto surge como instrumento de <strong>letramento e divulgação científica</strong> diante do avanço da desinformação e do negacionismo biológico. A adoção deliberada de uma <strong>linguagem descontraída e satírica</strong> funciona como recurso pedagógico para romper barreiras cognitivas e aproximar estudantes e a sociedade da beleza do método científico, da biologia evolutiva e da geologia histórica.
+              </p>
+              <p class="inst-desc">
+                Embora o tom seja lúdico e descontraído, o compromisso com o <strong>ensino científico de excelência é inegociável</strong>: cada argumento é desconstruído com rigor formal e referências primárias de alto impacto indexadas no CrossRef e OpenAlex.
+              </p>
+            </div>
           </div>
           <div class="inst-quote-box">
             <div class="quote-avatar">🔭</div>
@@ -685,6 +710,9 @@
               &ldquo;Diante de alegações extraordinárias, exigem-se evidências extraordinárias. E alegações de dinossauros vegetarianos na Arca de Noé continuam sem nenhuma.&rdquo;
             </p>
             <span class="inst-quote-author">— Princípio de Sagan Adaptado à Ciência Evolutiva</span>
+            <div class="inst-scicomm-pill">
+              <span>💡 Humor como ferramenta didática &bull; Ciência como compromisso</span>
+            </div>
           </div>
         </div>
       </div>
@@ -695,6 +723,55 @@
   <!-- =====================================================================
        Modais: Configurações, Catálogo e Favoritos
        ===================================================================== -->
+
+  <!-- Modal Sobre o Projeto, Objetivo Acadêmico & Divulgação Científica -->
+  <div id="modal-about-mission" class="modal-backdrop">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>🎓 Objetivo Acadêmico & Divulgação Científica</h3>
+          <p class="modal-subtitle">Laboratório de Bioinformática e Ciências Ômicas (LaBiOmicS) &bull; Universidade de Mogi das Cruzes</p>
+        </div>
+        <button class="btn-close-modal" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="modal-body academic-about-body">
+        <div class="about-card-badge">
+          <span class="pulse-dot"></span>
+          <span>Projeto de Extensão, Letramento Científico & Ensino de Biologia Evolutiva</span>
+        </div>
+
+        <h4 class="about-section-heading">1. A Missão Pedagógica</h4>
+        <p class="about-p">
+          O <strong>Criacionator 3000</strong> é uma plataforma universitária desenvolvida no <strong>LaBiOmicS — Laboratório de Bioinformática e Ciências Ômicas da Universidade de Mogi das Cruzes (UMC)</strong>, sob coordenação do <strong>Prof. Dr. Fabiano Bezerra Menegidio</strong>. Seu objetivo central é fornecer um repositório interativo e acessível de combate à desinformação, fortalecendo a compreensão pública da teoria da evolução biológica, da geocronologia e da epistemologia científica.
+        </p>
+
+        <h4 class="about-section-heading">2. Por que uma Linguagem Descontraída e Satírica?</h4>
+        <p class="about-p">
+          Estudos contemporâneos em comunicação pública da ciência (<em>Science Communication</em>) demonstram que a erudição excessivamente fria e inacessível muitas vezes falha em atingir o público geral e estudantes em fase de formação. Adotamos deliberadamente uma <strong>linguagem descontraída, bem-humorada e irônica</strong> — inspirada em divulgadores como Carl Sagan, Richard Dawkins, Stephen Jay Gould e comunicadores brasileiros consagrados — como um recurso didático de desarmamento afetivo. O humor atua como porta de entrada; a evidência científica atua como alicerce definitivo.
+        </p>
+
+        <h4 class="about-section-heading">3. O Rigor Científico Inegociável</h4>
+        <p class="about-p">
+          Apesar do tom descontraído, o padrão acadêmico é rigoroso:
+        </p>
+        <ul class="about-list">
+          <li><strong>Evidências Primárias:</strong> Cada refutação é respaldada por literatura científica indexada em periódicos de alto impacto internacional (<em>Nature</em>, <em>Science</em>, <em>PNAS</em>, <em>Evolution</em>, <em>Geology</em>, etc.).</li>
+          <li><strong>Auditoria ao Vivo:</strong> A ferramenta conecta-se diretamente em tempo real às APIs públicas do <strong>CrossRef</strong> e do <strong>OpenAlex</strong>, garantindo que os identificadores digitais permanentes (DOIs) sejam reais e ativos.</li>
+          <li><strong>Textos Históricos em Domínio Público:</strong> O acervo disponibiliza a íntegra de <em>'A Origem das Espécies'</em> (Charles Darwin, 1859) em capítulos Markdown para leitura e download aberto.</li>
+          <li><strong>Privacidade Local (Zero-Cloud):</strong> Todas as chaves e interações são mantidas exclusivamente no dispositivo do usuário via IndexedDB, sem coleta de dados pessoais.</li>
+        </ul>
+
+        <div class="about-coord-box">
+          <div class="coord-avatar">🧬</div>
+          <div>
+            <strong>LaBiOmicS — Laboratório de Bioinformática e Ciências Ômicas</strong><br>
+            Universidade de Mogi das Cruzes (UMC) &bull; Mogi das Cruzes, SP, Brasil<br>
+            <strong>Coordenação:</strong> Prof. Dr. Fabiano Bezerra Menegidio &bull; <a href="mailto:fabianomenegidio@umc.br" class="inst-email">fabianomenegidio@umc.br</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal de Configurações da Gemini API & IndexedDB -->
   <div id="modal-config" class="modal-backdrop">
