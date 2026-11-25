@@ -417,32 +417,79 @@ document.addEventListener("DOMContentLoaded", () => {
     dom.scienceWhyDumb.textContent = item.por_que_e_idiota;
     dom.scienceRealScience.textContent = item.a_ciencia_real;
 
-    // Fontes científicas
+    // Fontes científicas verificadas (CrossRef, OpenAlex, TalkOrigins e Google Scholar)
     dom.scienceSourcesList.innerHTML = "";
     if (Array.isArray(item.fontes_cientificas) && item.fontes_cientificas.length > 0) {
       item.fontes_cientificas.forEach(src => {
         const li = document.createElement("li");
-        li.className = "source-item";
-        const linkHref = src.doi_ou_link && src.doi_ou_link.startsWith("http")
-          ? src.doi_ou_link
-          : `https://scholar.google.com/scholar?q=${encodeURIComponent(`${src.autor_ano} ${src.titulo}`)}`;
+        li.className = "citation-item";
+
+        const rawUrl = src.doi_ou_link || "";
+        const isDoi = src.doi || rawUrl.includes("doi.org/10.") || rawUrl.startsWith("10.");
+        let doiUrl = null;
+        if (isDoi) {
+          const cleanDoi = src.doi || (rawUrl.includes("doi.org/") ? rawUrl.split("doi.org/")[1] : rawUrl);
+          doiUrl = `https://doi.org/${cleanDoi}`;
+        }
+        const isTalkOrigins = rawUrl.includes("talkorigins.org");
+        const scholarUrl = src.scholar_url || `https://scholar.google.com/scholar?q=${encodeURIComponent(`${src.autor_ano} ${src.titulo}`)}`;
+
+        let buttonsHtml = "";
+
+        if (doiUrl) {
+          buttonsHtml += `
+            <a class="citation-btn btn-doi" href="${escapeHtml(doiUrl)}" target="_blank" rel="noopener noreferrer" title="Abrir publicação pelo DOI oficial (doi.org)">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
+              </svg>
+              <span>DOI Oficial</span>
+            </a>
+          `;
+        } else if (isTalkOrigins) {
+          buttonsHtml += `
+            <a class="citation-btn btn-talkorigins" href="${escapeHtml(rawUrl)}" target="_blank" rel="noopener noreferrer" title="Ver refutação completa no TalkOrigins Archive">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+              </svg>
+              <span>TalkOrigins Archive</span>
+            </a>
+          `;
+        } else if (rawUrl && rawUrl.startsWith("http")) {
+          buttonsHtml += `
+            <a class="citation-btn btn-external" href="${escapeHtml(rawUrl)}" target="_blank" rel="noopener noreferrer" title="Acessar link da publicação">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
+              </svg>
+              <span>Fonte / Link</span>
+            </a>
+          `;
+        }
+
+        // Google Scholar sempre presente como busca direta garantida
+        buttonsHtml += `
+          <a class="citation-btn btn-scholar" href="${escapeHtml(scholarUrl)}" target="_blank" rel="noopener noreferrer" title="Buscar estudo e PDFs livres no Google Scholar">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <span>Google Scholar</span>
+          </a>
+        `;
 
         li.innerHTML = `
-          <div class="source-header">
-            <strong>${escapeHtml(src.autor_ano)}</strong> — <em>${escapeHtml(src.periodico)}</em>
+          <div class="citation-meta">
+            <span class="citation-authors">${escapeHtml(src.autor_ano)}</span>
+            <span class="citation-sep">&bull;</span>
+            <span class="citation-journal">${escapeHtml(src.periodico)}</span>
           </div>
-          <div class="source-title">"${escapeHtml(src.titulo)}"</div>
-          <a class="source-link" href="${escapeHtml(linkHref)}" target="_blank" rel="noopener noreferrer">
-            <svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
-            </svg>
-            Ver Estudo / DOI
-          </a>
+          <div class="citation-title">&ldquo;${escapeHtml(src.titulo)}&rdquo;</div>
+          <div class="citation-actions">
+            ${buttonsHtml}
+          </div>
         `;
         dom.scienceSourcesList.appendChild(li);
       });
     } else {
-      dom.scienceSourcesList.innerHTML = `<li class="source-item text-muted">Literatura biológica geral e TalkOrigins Archive.</li>`;
+      dom.scienceSourcesList.innerHTML = `<li class="citation-item text-muted">Literatura biológica geral revisada por pares e TalkOrigins Archive.</li>`;
     }
 
     // Configurar Quiz
