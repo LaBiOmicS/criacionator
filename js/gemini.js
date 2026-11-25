@@ -120,7 +120,9 @@ INSTRUÇÕES CRUCIAIS:
 1. O argumento criacionista deve soar autêntico no estilo do personagem (cheio de retórica, analogias estapafúrdias, certezas categóricas e versículos ou bordões).
 2. O lado científico ("Por que é idiota" e "A ciência real") deve ser brilhante, mordaz, cômico e didático — no espírito de Carl Sagan, Richard Dawkins e divulgadores científicos brasileiros respeitados (estilo Pirulla / Átila Iamarino).
 3. A falácia lógica deve ser identificada com precisão filosófica (ex: Deus das Lacunas, Falácia do Espantalho, Falsa Dicotomia, etc.).
-4. FONTES CIENTÍFICAS: Você DEVE fornecer fontes CIENTÍFICAS REAIS (artigos em periódicos de impacto como Nature, Science, PNAS, livros clássicos como 'A Origem das Espécies' ou 'O Relojoeiro Cego', ou arquivos como TalkOrigins). NÃO invente cientistas inexistentes nem periódicos falsos.
+4. FONTES CIENTÍFICAS E AUDITORIA AO VIVO:
+   - Você DEVE fornecer fontes CIENTÍFICAS REAIS e autênticas (artigos em periódicos de impacto como Nature, Science, PNAS, Cell, Evolution, Geology, Journal of Molecular Evolution, livros clássicos como 'A Origem das Espécies' de Darwin ou arquivos de refutação como TalkOrigins Archive).
+   - A ferramenta valida as fontes AO VIVO via API do CrossRef e OpenAlex diretamente no navegador. Forneça o título real exato (em inglês ou português) e o autor/ano para que o validador localize o DOI e o artigo oficial instantaneamente. Se souber o DOI canônico (ex: 10.1038/..., 10.1073/...), inclua-o. NUNCA invente periódicos ou cientistas fictícios.
 5. Crie também uma pergunta de Quiz de múltipla escolha com 4 opções para testar o conhecimento do usuário.
 
 Você DEVE responder EXCLUSIVAMENTE em formato JSON puro aderente ao seguinte esquema:

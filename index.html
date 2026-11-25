@@ -397,12 +397,33 @@
               <p id="science-real-science" class="science-text">Mecanismos evolutivos, dados experimentais e evidências...</p>
             </div>
 
-            <!-- Fontes Científicas Verificadas -->
+            <!-- Fontes Científicas Verificadas com Auditoria ao Vivo -->
             <div class="citations-card">
               <div class="citations-header">
-                <span class="citations-icon">📚</span>
-                <h4>Literatura Científica Verificada (Peer-Reviewed):</h4>
+                <div class="citations-header-title">
+                  <span class="citations-icon">📚</span>
+                  <h4>Literatura Científica Verificada (Peer-Reviewed)</h4>
+                </div>
+                <div class="citations-header-actions">
+                  <span id="citations-live-badge" class="live-pill-badge" title="Auditoria ao vivo via CrossRef e OpenAlex APIs">
+                    <span class="pulse-dot"></span>
+                    <span id="citations-badge-label">CrossRef & OpenAlex Ativos</span>
+                  </span>
+                  <button id="btn-revalidate-live" class="btn-revalidate-pill" title="Reexecutar checagem ao vivo das fontes nas APIs acadêmicas">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                    </svg>
+                    <span>Validar ao Vivo</span>
+                  </button>
+                </div>
               </div>
+
+              <!-- Barra de status de validação ao vivo -->
+              <div id="citations-validation-banner" class="citations-validation-banner hidden">
+                <span class="spinner-mini"></span>
+                <span id="citations-validation-text">Consultando CrossRef & OpenAlex ao vivo...</span>
+              </div>
+
               <ul id="science-sources-list" class="citations-list">
                 <!-- Preenchido dinamicamente via app.js -->
               </ul>
@@ -650,9 +671,10 @@
   <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=4.0"></script>
-  <script src="js/sound.js?v=4.0"></script>
-  <script src="js/gemini.js?v=4.0"></script>
-  <script src="js/app.js?v=4.0"></script>
+  <script src="js/data.js?v=4.1"></script>
+  <script src="js/live-validator.js?v=4.1"></script>
+  <script src="js/sound.js?v=4.1"></script>
+  <script src="js/gemini.js?v=4.1"></script>
+  <script src="js/app.js?v=4.1"></script>
 </body>
 </html>

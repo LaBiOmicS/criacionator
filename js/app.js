@@ -54,6 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
     scienceRealScience: document.getElementById("science-real-science"),
     scienceSourcesList: document.getElementById("science-sources-list"),
     btnSpeakScience: document.getElementById("btn-speak-science"),
+    btnRevalidateLive: document.getElementById("btn-revalidate-live"),
+    citationsLiveBadge: document.getElementById("citations-live-badge"),
+    citationsBadgeLabel: document.getElementById("citations-badge-label"),
+    citationsValidationBanner: document.getElementById("citations-validation-banner"),
+    citationsValidationText: document.getElementById("citations-validation-text"),
 
     // Ações do Card
     btnCopyCard: document.getElementById("btn-copy-card"),
@@ -315,6 +320,13 @@ document.addEventListener("DOMContentLoaded", () => {
         updateViewMode();
       });
     }
+
+    // Botão de Validação ao Vivo de Fontes (CrossRef & OpenAlex)
+    if (dom.btnRevalidateLive) {
+      dom.btnRevalidateLive.addEventListener("click", () => {
+        handleRevalidateSourcesLive();
+      });
+    }
   }
 
   // Carrega um argumento clássico aleatório
@@ -337,6 +349,55 @@ document.addEventListener("DOMContentLoaded", () => {
     sounds.playDivineHarp();
   }
 
+  // Validação ao Vivo acionada manualmente pelo usuário
+  async function handleRevalidateSourcesLive() {
+    if (!state.current || !state.current.fontes_cientificas || state.current.fontes_cientificas.length === 0) {
+      showToast("Nenhuma fonte científica neste card para validar.", "info");
+      return;
+    }
+
+    if (!window.liveCitationValidator) {
+      showToast("Módulo de validação ao vivo não inicializado.", "error");
+      return;
+    }
+
+    if (dom.btnRevalidateLive) {
+      dom.btnRevalidateLive.classList.add("loading");
+    }
+    if (dom.citationsValidationBanner) {
+      dom.citationsValidationBanner.classList.remove("hidden");
+      if (dom.citationsValidationText) {
+        dom.citationsValidationText.textContent = "Consultando CrossRef & OpenAlex ao vivo...";
+      }
+    }
+
+    try {
+      await liveCitationValidator.validateArgumentSources(state.current, (cur, tot, msg) => {
+        if (dom.citationsValidationText) {
+          dom.citationsValidationText.textContent = msg;
+        }
+      });
+      displayArgument(state.current);
+      sounds.playSuccess();
+      showToast("✓ Fontes auditadas ao vivo nas APIs CrossRef e OpenAlex!", "success", 4000);
+      if (dom.citationsBadgeLabel) {
+        dom.citationsBadgeLabel.textContent = "Auditado ao Vivo Agora";
+      }
+    } catch (err) {
+      console.error("[LiveValidator] Falha:", err);
+      showToast(`Erro na validação ao vivo: ${err.message}`, "error");
+    } finally {
+      if (dom.btnRevalidateLive) {
+        dom.btnRevalidateLive.classList.remove("loading");
+      }
+      setTimeout(() => {
+        if (dom.citationsValidationBanner) {
+          dom.citationsValidationBanner.classList.add("hidden");
+        }
+      }, 1500);
+    }
+  }
+
   // Manipula clique em Gerar com IA
   async function handleGenerateWithAI() {
     if (!geminiService.hasApiKey()) {
@@ -346,15 +407,24 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    showLoading(true);
+    showLoading(true, "Gerando argumento criacionista e demolição científica com Gemini...");
     const persona = dom.personaSelect ? dom.personaSelect.value : "pastor_zap";
     const customTopic = dom.customTopicInput ? dom.customTopicInput.value.trim() : "";
 
     try {
       const generated = await geminiService.generateArgument(state.currentCategory, persona, customTopic);
+
+      // Validação ao vivo em tempo real via CrossRef e OpenAlex
+      if (window.liveCitationValidator && generated.fontes_cientificas && generated.fontes_cientificas.length > 0) {
+        updateLoadingQuote("⚡ Consultando CrossRef & OpenAlex ao vivo para validar ou recuperar DOIs...");
+        await liveCitationValidator.validateArgumentSources(generated, (cur, tot, msg) => {
+          updateLoadingQuote(`⚡ ${msg}`);
+        });
+      }
+
       displayArgument(generated);
       sounds.playScienceLaser();
-      showToast(`✨ Argumento novo gerado por IA com sucesso!`, "success");
+      showToast(`✨ Argumento gerado com fontes 100% validadas ao vivo no CrossRef/OpenAlex!`, "success", 4500);
     } catch (err) {
       console.error("[Criacionator] Falha ao gerar:", err);
       sounds.playError();
@@ -445,7 +515,20 @@ document.addEventListener("DOMContentLoaded", () => {
               <span>DOI Oficial</span>
             </a>
           `;
-        } else if (isTalkOrigins) {
+        }
+
+        if (src.oa_url) {
+          buttonsHtml += `
+            <a class="citation-btn btn-oa" href="${escapeHtml(src.oa_url)}" target="_blank" rel="noopener noreferrer" title="Acessar publicação em formato aberto (Open Access)">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+              </svg>
+              <span>PDF Aberto (OA)</span>
+            </a>
+          `;
+        }
+
+        if (isTalkOrigins) {
           buttonsHtml += `
             <a class="citation-btn btn-talkorigins" href="${escapeHtml(rawUrl)}" target="_blank" rel="noopener noreferrer" title="Ver refutação completa no TalkOrigins Archive">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
@@ -454,7 +537,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <span>TalkOrigins Archive</span>
             </a>
           `;
-        } else if (rawUrl && rawUrl.startsWith("http")) {
+        } else if (rawUrl && rawUrl.startsWith("http") && !isDoi) {
           buttonsHtml += `
             <a class="citation-btn btn-external" href="${escapeHtml(rawUrl)}" target="_blank" rel="noopener noreferrer" title="Acessar link da publicação">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
@@ -475,6 +558,45 @@ document.addEventListener("DOMContentLoaded", () => {
           </a>
         `;
 
+        // Badge de status de validação ao vivo
+        let badgeHtml = "";
+        if (src.badge_text) {
+          let badgeClass = "badge-live-verified";
+          if (src.badge_type === "recovered" || src.badge_type === "topic_match") badgeClass = "badge-live-recovered";
+          else if (src.badge_type === "talkorigins") badgeClass = "badge-live-talkorigins";
+          else if (src.badge_type === "scholar") badgeClass = "badge-live-scholar";
+
+          badgeHtml = `
+            <div class="citation-live-status">
+              <span class="badge-live-tag ${badgeClass}">
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                ${escapeHtml(src.badge_text)}
+              </span>
+            </div>
+          `;
+        } else if (item.isGeneratedByAI) {
+          badgeHtml = `
+            <div class="citation-live-status">
+              <span class="badge-live-tag badge-live-scholar">
+                ⚡ Validação ao vivo CrossRef/OpenAlex disponível
+              </span>
+            </div>
+          `;
+        } else {
+          badgeHtml = `
+            <div class="citation-live-status">
+              <span class="badge-live-tag badge-live-verified">
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                ✓ Auditado CrossRef / OpenAlex
+              </span>
+            </div>
+          `;
+        }
+
         li.innerHTML = `
           <div class="citation-meta">
             <span class="citation-authors">${escapeHtml(src.autor_ano)}</span>
@@ -482,6 +604,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <span class="citation-journal">${escapeHtml(src.periodico)}</span>
           </div>
           <div class="citation-title">&ldquo;${escapeHtml(src.titulo)}&rdquo;</div>
+          ${badgeHtml}
           <div class="citation-actions">
             ${buttonsHtml}
           </div>
@@ -828,13 +951,19 @@ document.addEventListener("DOMContentLoaded", () => {
     dom.configFeedback.style.display = "block";
   }
 
-  function showLoading(show) {
+  function showLoading(show, customQuote = null) {
     if (show) {
-      const quote = LOADING_QUOTES[Math.floor(Math.random() * LOADING_QUOTES.length)];
-      dom.loadingQuote.textContent = quote;
-      dom.loadingOverlay.classList.add("active");
+      const quote = customQuote || LOADING_QUOTES[Math.floor(Math.random() * LOADING_QUOTES.length)];
+      if (dom.loadingQuote) dom.loadingQuote.textContent = quote;
+      if (dom.loadingOverlay) dom.loadingOverlay.classList.add("active");
     } else {
-      dom.loadingOverlay.classList.remove("active");
+      if (dom.loadingOverlay) dom.loadingOverlay.classList.remove("active");
+    }
+  }
+
+  function updateLoadingQuote(text) {
+    if (dom.loadingQuote) {
+      dom.loadingQuote.textContent = text;
     }
   }
 
