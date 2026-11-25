@@ -420,6 +420,11 @@ class LiveCitationValidator {
 // Instância singleton global para uso no cliente
 const liveCitationValidator = new LiveCitationValidator();
 
+if (typeof window !== "undefined") {
+  window.LiveCitationValidator = LiveCitationValidator;
+  window.liveCitationValidator = liveCitationValidator;
+}
+
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { LiveCitationValidator, liveCitationValidator };
 }

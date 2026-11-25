@@ -282,6 +282,11 @@ class CriacionatorStorageDB {
 // Instância singleton global
 const storageDB = new CriacionatorStorageDB();
 
+if (typeof window !== "undefined") {
+  window.CriacionatorStorageDB = CriacionatorStorageDB;
+  window.storageDB = storageDB;
+}
+
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { CriacionatorStorageDB, storageDB };
 }
