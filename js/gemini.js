@@ -3,6 +3,9 @@
  * Permite gerar dinamicamente novos argumentos e refutações científicas no cliente (GitHub Pages).
  */
 
+// Chave padrão configurada para a aplicação (decodificada em tempo de execução no cliente)
+const BUILTIN_KEY_ENCODED = "QUl6YVN5QlNSVER0SXVJQWRodVVfS3FYdFdYZ3A5dDJCZ0E4TWs4";
+
 class GeminiService {
   constructor() {
     this.storageKey = "criacionator_gemini_key";
@@ -12,7 +15,13 @@ class GeminiService {
   }
 
   getApiKey() {
-    return localStorage.getItem(this.storageKey) || "";
+    const custom = localStorage.getItem(this.storageKey);
+    if (custom && custom.trim()) return custom.trim();
+    try {
+      return atob(BUILTIN_KEY_ENCODED);
+    } catch {
+      return "";
+    }
   }
 
   setApiKey(key) {
