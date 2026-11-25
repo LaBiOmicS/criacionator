@@ -483,6 +483,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dom.darwinChatMessages.scrollTop = dom.darwinChatMessages.scrollHeight;
       }
     } else if (targetId === "module-catalog") {
+      renderCatalog();
       openModal(dom.modalCatalog);
       if (dom.academicTabs) {
         dom.academicTabs.forEach(t => {
