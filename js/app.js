@@ -80,6 +80,15 @@ document.addEventListener("DOMContentLoaded", () => {
     favoritesGrid: document.getElementById("favorites-grid"),
     closeModalBtns: document.querySelectorAll(".btn-close-modal"),
 
+    // Marcos da Timeline Evolutiva
+    evoMilestones: document.querySelectorAll(".evo-milestone"),
+
+    // Busca e filtros do Catálogo
+    catalogSearchInput: document.getElementById("catalog-search-input"),
+    catalogCategorySelect: document.getElementById("catalog-category-select"),
+    catalogMatchesCount: document.getElementById("catalog-matches-count"),
+    btnClearCatalogSearch: document.getElementById("btn-clear-catalog-search"),
+
     // Badges informativos de status
     hasAiBadge: document.getElementById("ai-status-badge"),
     statsClassicCount: document.getElementById("stats-classic-count")
@@ -147,15 +156,90 @@ document.addEventListener("DOMContentLoaded", () => {
       sounds.playClick();
     });
 
-    // Filtros de Categoria
+    // Filtros de Categoria da Página Principal
     dom.categoryPills.forEach(pill => {
       pill.addEventListener("click", () => {
         sounds.playClick();
         dom.categoryPills.forEach(p => p.classList.remove("active"));
         pill.classList.add("active");
         state.currentCategory = pill.dataset.category || "all";
+        loadRandomClassic();
       });
     });
+
+    // Marcos da Linha do Tempo Evolutiva (Deep Time)
+    if (dom.evoMilestones) {
+      dom.evoMilestones.forEach(milestone => {
+        milestone.addEventListener("click", () => {
+          const era = milestone.dataset.era;
+          const nameEl = milestone.querySelector(".milestone-name");
+          const timeEl = milestone.querySelector(".milestone-badge");
+          const eraName = nameEl ? nameEl.textContent : "Marco Evolutivo";
+          const eraTime = timeEl ? timeEl.textContent : "";
+
+          // Sincroniza categoria
+          state.currentCategory = era || "all";
+          dom.categoryPills.forEach(p => {
+            if (p.dataset.category === era) {
+              p.classList.add("active");
+            } else {
+              p.classList.remove("active");
+            }
+          });
+
+          // Carrega argumento temático
+          loadRandomClassic();
+
+          if (milestone.classList.contains("myth-milestone")) {
+            sounds.playError();
+            showToast(`🛑 Mito de 6.000 Anos selecionado! Carregando as maiores peripécias da Terra Jovem...`, "error");
+          } else {
+            sounds.playScienceLaser();
+            showToast(`🌍 ${eraName} (${eraTime}): Filtrando evidências e argumentos clássicos!`, "info");
+          }
+
+          if (dom.cardContainer) {
+            dom.cardContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+
+        // Suporte a teclado
+        milestone.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            milestone.click();
+          }
+        });
+      });
+    }
+
+    // Busca e Filtros em Tempo Real no Catálogo Modal
+    if (dom.catalogSearchInput) {
+      dom.catalogSearchInput.addEventListener("input", () => {
+        const query = dom.catalogSearchInput.value.trim();
+        if (dom.btnClearCatalogSearch) {
+          dom.btnClearCatalogSearch.style.display = query.length > 0 ? "flex" : "none";
+        }
+        renderCatalog();
+      });
+    }
+
+    if (dom.btnClearCatalogSearch) {
+      dom.btnClearCatalogSearch.addEventListener("click", () => {
+        if (dom.catalogSearchInput) {
+          dom.catalogSearchInput.value = "";
+          dom.btnClearCatalogSearch.style.display = "none";
+          renderCatalog();
+          dom.catalogSearchInput.focus();
+        }
+      });
+    }
+
+    if (dom.catalogCategorySelect) {
+      dom.catalogCategorySelect.addEventListener("change", () => {
+        renderCatalog();
+      });
+    }
 
     // Ações do Card
     dom.btnCopyCard.addEventListener("click", copyCardContent);
@@ -506,25 +590,80 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Renderizar catálogo de clássicos no modal
+  // Renderizar catálogo de falácias com busca e filtros em tempo real
   function renderCatalog() {
+    if (!dom.catalogGrid) return;
     dom.catalogGrid.innerHTML = "";
-    ARGUMENTOS_CLASSICOS.forEach(item => {
+
+    const query = dom.catalogSearchInput ? dom.catalogSearchInput.value.trim().toLowerCase() : "";
+    const selectedCategory = dom.catalogCategorySelect ? dom.catalogCategorySelect.value : "all";
+
+    // Filtragem combinada
+    const filtered = ARGUMENTOS_CLASSICOS.filter(item => {
+      // Filtro de categoria
+      if (selectedCategory !== "all" && item.categoria !== selectedCategory) {
+        return false;
+      }
+      // Filtro de texto por termos
+      if (query) {
+        const titleMatch = (item.titulo || "").toLowerCase().includes(query);
+        const argMatch = (item.argumento_criacionista || "").toLowerCase().includes(query);
+        const debunkMatch = (item.por_que_e_idiota || "").toLowerCase().includes(query);
+        const scienceMatch = (item.a_ciencia_real || "").toLowerCase().includes(query);
+        const fallacyMatch = (item.falacia_logica || "").toLowerCase().includes(query);
+        return titleMatch || argMatch || debunkMatch || scienceMatch || fallacyMatch;
+      }
+      return true;
+    });
+
+    // Atualiza badge de contagem
+    if (dom.catalogMatchesCount) {
+      dom.catalogMatchesCount.textContent = `${filtered.length} de ${ARGUMENTOS_CLASSICOS.length} falácias`;
+    }
+
+    if (filtered.length === 0) {
+      dom.catalogGrid.innerHTML = `
+        <div class="empty-state" style="grid-column: 1 / -1; padding: 2.5rem 1rem;">
+          <p style="font-size: 1.15rem; font-weight: 700; color: #f87171;">Nenhuma falácia encontrada!</p>
+          <p class="text-muted" style="margin-top: 0.5rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+            Não encontramos argumentos correspondentes aos termos digitados. Tente palavras como <em>"arca"</em>, <em>"olho"</em>, <em>"banana"</em>, <em>"entropia"</em>, <em>"neandertal"</em> ou limpe a busca.
+          </p>
+          <button id="btn-reset-catalog-filters" class="btn-primary-action btn-secondary" style="margin-top: 1rem;">
+            Limpar Busca & Filtros
+          </button>
+        </div>
+      `;
+      const btnReset = document.getElementById("btn-reset-catalog-filters");
+      if (btnReset) {
+        btnReset.addEventListener("click", () => {
+          if (dom.catalogSearchInput) dom.catalogSearchInput.value = "";
+          if (dom.catalogCategorySelect) dom.catalogCategorySelect.value = "all";
+          if (dom.btnClearCatalogSearch) dom.btnClearCatalogSearch.style.display = "none";
+          renderCatalog();
+        });
+      }
+      return;
+    }
+
+    filtered.forEach(item => {
       const card = document.createElement("div");
       card.className = "catalog-item-card";
       card.innerHTML = `
-        <div class="cat-badge">${item.categoria_label}</div>
+        <div class="cat-badge">${escapeHtml(item.categoria_label || "Falácia")}</div>
         <h4>${escapeHtml(item.titulo)}</h4>
-        <p class="cat-snippet">${escapeHtml(item.argumento_criacionista.substring(0, 110))}...</p>
+        <p class="cat-snippet">${escapeHtml(item.argumento_criacionista.substring(0, 115))}...</p>
         <div class="cat-footer">
           <span class="cat-delirium">Delírio: ${item.nivel_delirio}/10</span>
-          <button class="btn-select-catalog" data-id="${item.id}">Carregar</button>
+          <button class="btn-select-catalog" data-id="${item.id}">Carregar &rarr;</button>
         </div>
       `;
       card.querySelector(".btn-select-catalog").addEventListener("click", () => {
         displayArgument(item);
         closeAllModals();
         sounds.playDivineHarp();
+        if (dom.cardContainer) {
+          dom.cardContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       });
       dom.catalogGrid.appendChild(card);
     });

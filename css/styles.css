@@ -172,38 +172,390 @@ body {
   transform: translateY(-1px);
 }
 
-/* ==========================================================================
-   Hero & Control Hub
-   ========================================================================== */
-.hero-section {
-  text-align: center;
-  margin: 1.5rem 0 2rem 0;
+/* Header Institution Badge */
+.header-institution-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  color: #38bdf8;
+  font-weight: 700;
+  backdrop-filter: blur(8px);
 }
 
-.hero-title {
-  font-size: 2.2rem;
+.header-institution-badge .badge-icon-lab {
+  font-size: 0.95rem;
+}
+
+.header-institution-badge .badge-inst-sep {
+  opacity: 0.4;
+}
+
+.header-institution-badge .badge-inst-umc {
+  color: #a7f3d0;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+/* Header Catalog Button */
+.btn-header-catalog {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(16, 185, 129, 0.15));
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  color: #f1f5f9;
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-header-catalog:hover {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.35), rgba(16, 185, 129, 0.25));
+  border-color: #38bdf8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.25);
+}
+
+/* ==========================================================================
+   Hero Evolutivo (Concepção de Evolução & Tempo Profundo)
+   ========================================================================== */
+.hero-evolution {
+  text-align: center;
+  margin: 1.5rem 0 2.5rem 0;
+  position: relative;
+}
+
+.hero-lab-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(6, 182, 212, 0.1);
+  margin-bottom: 1.25rem;
+  backdrop-filter: blur(10px);
+}
+
+.hero-lab-pill strong {
+  color: #38bdf8;
+}
+
+.hero-lab-pill .pill-inst {
+  color: #34d399;
+  font-weight: 600;
+}
+
+.hero-lab-pill .pill-sep {
+  opacity: 0.4;
+}
+
+.hero-main-title {
+  font-size: 2.35rem;
   font-weight: 800;
   line-height: 1.2;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.02em;
 }
 
-.hero-title .gradient-text-amber {
+.hero-main-title .gradient-text-amber {
   background: linear-gradient(135deg, #fbbf24, #f59e0b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.hero-title .gradient-text-cyan {
+.hero-main-title .gradient-text-cyan {
   background: linear-gradient(135deg, #38bdf8, #10b981);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.hero-subtitle {
+.hero-main-title .gradient-text-myth {
+  background: linear-gradient(135deg, #f43f5e, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.vs-badge {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 900;
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 0.15rem 0.55rem;
+  border-radius: 9999px;
+  vertical-align: middle;
+  margin: 0 0.35rem;
+}
+
+.hero-quote-block {
+  max-width: 820px;
+  margin: 0 auto 2rem auto;
+  padding: 0.9rem 1.4rem;
+  background: rgba(17, 24, 39, 0.6);
+  border-left: 3px solid #06b6d4;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  text-align: left;
+  backdrop-filter: blur(8px);
+}
+
+.dobzhansky-quote {
   font-size: 1.05rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.dobzhansky-quote cite {
+  font-size: 0.85rem;
+  color: #38bdf8;
+  font-style: normal;
+  font-weight: 700;
+  margin-left: 0.5rem;
+}
+
+.dobzhansky-punchline {
+  font-size: 0.95rem;
+  color: #fbbf24;
+  font-weight: 500;
+  margin-top: 0.35rem;
+}
+
+/* Container do Tempo Profundo */
+.deep-time-container {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  margin-top: 1rem;
+}
+
+.deep-time-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-bottom: 0.85rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.time-header-title {
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseGreen 2s infinite;
+}
+
+@keyframes pulseGreen {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.time-header-note {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+/* Track horizontal de evolução */
+.evolution-track-wrapper {
+  overflow-x: auto;
+  padding: 0.5rem 0.25rem 1rem 0.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(6, 182, 212, 0.4) transparent;
+}
+
+.evolution-track-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.evolution-track-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(6, 182, 212, 0.3);
+  border-radius: 9999px;
+}
+
+.evolution-track {
+  display: flex;
+  align-items: center;
+  min-width: 980px;
+  justify-content: space-between;
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.evo-milestone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  padding: 0.5rem 0.6rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.25s ease;
+  min-width: 95px;
+  max-width: 110px;
+  position: relative;
+}
+
+.evo-milestone:hover {
+  background: rgba(6, 182, 212, 0.12);
+  border-color: rgba(6, 182, 212, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(6, 182, 212, 0.2);
+}
+
+.milestone-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+  border-radius: 9999px;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-mono);
+}
+
+.time-cyan { background: rgba(6, 182, 212, 0.2); color: #38bdf8; border: 1px solid rgba(6, 182, 212, 0.35); }
+.time-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
+.time-purple { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); }
+.time-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.35); }
+.time-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); }
+.time-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); }
+.time-orange { background: rgba(249, 115, 22, 0.2); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.35); }
+.time-myth { background: rgba(239, 68, 68, 0.25); color: #fca5a5; border: 1px solid #ef4444; }
+
+.milestone-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-bottom: 0.35rem;
+}
+
+.dot-cyan { background: #06b6d4; box-shadow: 0 0 8px #06b6d4; }
+.dot-emerald { background: #10b981; box-shadow: 0 0 8px #10b981; }
+.dot-purple { background: #a855f7; box-shadow: 0 0 8px #a855f7; }
+.dot-blue { background: #3b82f6; box-shadow: 0 0 8px #3b82f6; }
+.dot-amber { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+.dot-red { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+.dot-orange { background: #f97316; box-shadow: 0 0 8px #f97316; }
+.dot-myth { background: #ef4444; box-shadow: 0 0 10px #ef4444; animation: pulseRed 1.5s infinite; }
+
+@keyframes pulseRed {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+.milestone-icon {
+  font-size: 1.3rem;
+  margin-bottom: 0.2rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.milestone-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  line-height: 1.2;
+}
+
+.milestone-desc {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-top: 0.2rem;
+  line-height: 1.2;
+}
+
+/* Conectores da linha do tempo */
+.evo-connector {
+  flex-grow: 1;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.4), rgba(16, 185, 129, 0.4));
+  margin: 0 0.25rem;
+  position: relative;
+  top: -16px;
+}
+
+.evo-connector-myth {
+  background: repeating-linear-gradient(90deg, #ef4444, #ef4444 4px, transparent 4px, transparent 8px);
+}
+
+.myth-milestone {
+  background: rgba(127, 29, 29, 0.25);
+  border: 1px dashed rgba(239, 68, 68, 0.5);
+}
+
+.myth-milestone:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.3);
+}
+
+.myth-name {
+  color: #fca5a5;
+}
+
+.myth-desc {
+  color: #f87171;
+}
+
+/* Badges estatísticas do Hero */
+.hero-stats-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+}
+
+.stat-num {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #38bdf8;
+  font-family: var(--font-mono);
+}
+
+.stat-label {
+  font-size: 0.78rem;
   color: var(--text-muted);
-  max-width: 780px;
-  margin: 0 auto 1.5rem auto;
 }
 
 /* Painel de Controles */
@@ -880,6 +1232,104 @@ body {
   color: #fde68a;
 }
 
+/* Subtítulo no modal */
+.modal-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.modal-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Barra de Busca e Filtros do Catálogo */
+.catalog-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.search-input-wrapper .search-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.catalog-search {
+  padding-left: 2.75rem !important;
+  padding-right: 2.5rem !important;
+  width: 100%;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  font-size: 0.92rem;
+}
+
+.catalog-search:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+}
+
+.btn-clear-search {
+  position: absolute;
+  right: 0.85rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--text-muted);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: var(--transition-fast);
+}
+
+.btn-clear-search:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.catalog-filter-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.catalog-select {
+  max-width: 380px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--border-color);
+}
+
+.matches-count-badge {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+}
+
 /* Grids nos Modais (Catálogo e Favoritos) */
 .catalog-grid {
   display: grid;
@@ -1014,6 +1464,113 @@ body {
 }
 
 /* ==========================================================================
+   Seção Institucional: LaBiOmicS — UMC
+   ========================================================================== */
+.institutional-section {
+  margin: 3.5rem 0 1.5rem 0;
+}
+
+.institutional-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 2.2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(6, 182, 212, 0.08);
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+}
+
+.institutional-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #f59e0b, #06b6d4, #10b981);
+}
+
+.inst-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.inst-lab-tag {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #38bdf8;
+  margin-bottom: 0.4rem;
+}
+
+.inst-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+
+.inst-sub {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  margin-bottom: 0.85rem;
+}
+
+.inst-sub strong {
+  color: #e2e8f0;
+}
+
+.inst-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.inst-email {
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+
+.inst-email:hover {
+  text-decoration: underline;
+  color: #7dd3fc;
+}
+
+.inst-quote-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-md);
+  padding: 1.4rem;
+  text-align: center;
+}
+
+.quote-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.quote-text {
+  font-size: 0.92rem;
+  color: #e2e8f0;
+  font-style: italic;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.quote-author {
+  font-size: 0.78rem;
+  color: #fbbf24;
+  font-weight: 700;
+}
+
+/* ==========================================================================
    Footer
    ========================================================================== */
 .site-footer {
@@ -1026,17 +1583,30 @@ body {
 }
 
 .footer-content {
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
+.footer-lead {
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.footer-coord {
+  font-size: 0.88rem;
+  color: #94a3b8;
+}
+
 .footer-links {
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1.25rem;
   margin-top: 0.5rem;
 }
 
@@ -1048,6 +1618,30 @@ body {
 
 .footer-link:hover {
   color: var(--science-accent);
+}
+
+/* Responsividade Geral */
+@media (max-width: 768px) {
+  .hero-main-title {
+    font-size: 1.65rem;
+  }
+  .header-institution-badge {
+    display: none;
+  }
+  .btn-header-catalog .btn-text-full {
+    display: none;
+  }
+  .inst-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .catalog-select {
+    max-width: 100%;
+    width: 100%;
+  }
+  .stat-pill {
+    padding: 0.35rem 0.65rem;
+  }
 }
 
 /* Animações */

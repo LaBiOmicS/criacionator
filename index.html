@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Criacionator 3000 — Gerador de Falácias Criacionistas & Refutação Científica</title>
-  <meta name="description" content="Página satírica geradora de argumentos criacionistas clássicos e sua impiedosa demolição científica com fontes reais da biologia evolutiva, astrofísica e geologia. Funciona 100% no GitHub Pages com IA Gemini.">
+  <title>Criacionator 3000 — 4,5 Bilhões de Anos de Evolução vs 6.000 Anos de Delírio | LaBiOmicS UMC</title>
+  <meta name="description" content="Catálogo interativo com mais de 100 falácias criacionistas desmascaradas com fontes científicas reais (Nature, Science, PNAS, TalkOrigins) e gerador de sátiras por IA Gemini. Desenvolvido no LaBiOmicS — UMC.">
+  <meta name="author" content="LaBiOmicS — Laboratório de Bioinformática e Ciências Ômicas, Universidade de Mogi das Cruzes. Coordenação: Prof. Dr. Fabiano Bezerra Menegidio · fabianomenegidio@umc.br">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍌</text></svg>">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=3.0">
 </head>
 <body>
 
@@ -21,21 +22,30 @@
         </div>
       </a>
 
+      <!-- Selo Institucional Header -->
+      <div class="header-institution-badge" title="Laboratório de Bioinformática e Ciências Ômicas — Universidade de Mogi das Cruzes">
+        <span class="badge-icon-lab">🧬</span>
+        <span class="badge-lab-name">LaBiOmicS</span>
+        <span class="badge-inst-sep">•</span>
+        <span class="badge-inst-umc">UMC</span>
+      </div>
+
       <div class="header-actions">
-        <span id="ai-status-badge" class="status-badge offline" title="Status da conexão com IA">
-          ⚡ Base Local Ativa
+        <span id="ai-status-badge" class="status-badge offline" title="Status da conexão com IA Gemini">
+          ⚡ 104 Falácias Locais
         </span>
 
-        <button id="btn-sound-toggle" class="btn-icon" aria-label="Alternar Efeitos Sonoros" title="Alternar Som">
+        <button id="btn-sound-toggle" class="btn-icon" aria-label="Alternar Efeitos Sonoros" title="Alternar Efeitos Sonoros">
           <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/>
           </svg>
         </button>
 
-        <button id="btn-open-catalog" class="btn-icon" aria-label="Ver Catálogo de Falácias" title="Ver Catálogo Completo">
-          <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <button id="btn-open-catalog" class="btn-header-catalog" aria-label="Ver Catálogo de Falácias" title="Ver Catálogo Completo (104 Falácias)">
+          <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15zM8 7h8M8 11h8"/>
           </svg>
+          <span class="btn-text-full">Catálogo (104)</span>
         </button>
 
         <button id="btn-open-favorites" class="btn-icon" aria-label="Ver Favoritos Salvos" title="Meus Favoritos">
@@ -57,42 +67,223 @@
   <!-- Conteúdo Principal -->
   <main class="container">
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <h2 class="hero-title">
-        <span class="gradient-text-amber">Argumentos da Idade do Bronze</span> vs <span class="gradient-text-cyan">A Marretada da Ciência</span>
+    <!-- =====================================================================
+         Hero Section Evolutivo: Tempo Profundo vs Mito de 6.000 Anos
+         ===================================================================== -->
+    <section class="hero-evolution">
+      <!-- Badge de Reconhecimento do Laboratório -->
+      <div class="hero-lab-pill">
+        <span class="pill-spark">🧬</span>
+        <span class="pill-title">Desenvolvido no <strong>LaBiOmicS</strong> — Laboratório de Bioinformática e Ciências Ômicas</span>
+        <span class="pill-sep">•</span>
+        <span class="pill-inst">Universidade de Mogi das Cruzes (UMC)</span>
+      </div>
+
+      <!-- Título Principal do Hero -->
+      <h2 class="hero-main-title">
+        <span class="gradient-text-amber">Da Sopa Primordial ao Homo sapiens:</span>
+        <br>
+        <span class="gradient-text-cyan">4,5 Bilhões de Anos de Evolução</span>
+        <span class="vs-badge">VS</span>
+        <span class="gradient-text-myth">6.000 Anos de Delírio</span>
       </h2>
-      <p class="hero-subtitle">
-        Porque se o ser humano veio do macaco, por que ainda existem bananas com zíper natural e pastores vendendo terreno no céu? Gere delírios teológicos e aprenda a biologia real com fontes revisadas por pares!
-      </p>
+
+      <!-- Epígrafe Dobzhansky -->
+      <div class="hero-quote-block">
+        <blockquote class="dobzhansky-quote">
+          &ldquo;Nada na biologia faz sentido, exceto à luz da evolução.&rdquo;
+          <cite>— Theodosius Dobzhansky (1973)</cite>
+        </blockquote>
+        <p class="dobzhansky-punchline">
+          &ldquo;...e nada no criacionismo faz sentido, nem mesmo à luz de uma lâmpada incandescente de 15 watts.&rdquo;
+        </p>
+      </div>
+
+      <!-- Linha do Tempo Evolutiva do Tempo Profundo (Deep Time Timeline) -->
+      <div class="deep-time-container">
+        <div class="deep-time-header">
+          <div class="time-header-title">
+            <span class="pulse-dot"></span>
+            <strong>A ESCALA DO TEMPO PROFUNDO:</strong> 4,54 Bilhões de Anos de Fatos da Terra
+          </div>
+          <div class="time-header-note">Clique nos marcos evolutivos para filtrar o tema instantaneamente</div>
+        </div>
+
+        <div class="evolution-track-wrapper">
+          <div class="evolution-track" id="evolution-timeline">
+
+            <!-- Marco 1: Formação da Terra -->
+            <div class="evo-milestone" data-era="geologia_terra_jovem" role="button" tabindex="0" title="4,54 Ga: Formação da Terra e Hadeano">
+              <div class="milestone-badge time-cyan">4,54 Ga</div>
+              <div class="milestone-dot dot-cyan"></div>
+              <div class="milestone-icon">🌍</div>
+              <div class="milestone-name">Origem da Terra</div>
+              <div class="milestone-desc">Hadeano & oceanos</div>
+            </div>
+
+            <div class="evo-connector"></div>
+
+            <!-- Marco 2: LUCA & Abiogênese -->
+            <div class="evo-milestone" data-era="abiogenese" role="button" tabindex="0" title="~3,8 Ga: LUCA e Primeiros Procariontes">
+              <div class="milestone-badge time-emerald">3,80 Ga</div>
+              <div class="milestone-dot dot-emerald"></div>
+              <div class="milestone-icon">🦠</div>
+              <div class="milestone-name">LUCA & Vida</div>
+              <div class="milestone-desc">Mundo de RNA & células</div>
+            </div>
+
+            <div class="evo-connector"></div>
+
+            <!-- Marco 3: Grande Oxigenação -->
+            <div class="evo-milestone" data-era="abiogenese" role="button" tabindex="0" title="~2,4 Ga: Cianobactérias e Grande Evento de Oxigenação">
+              <div class="milestone-badge time-emerald">2,40 Ga</div>
+              <div class="milestone-dot dot-emerald"></div>
+              <div class="milestone-icon">☀️</div>
+              <div class="milestone-name">Grande Oxigenação</div>
+              <div class="milestone-desc">Fotossíntese global</div>
+            </div>
+
+            <div class="evo-connector"></div>
+
+            <!-- Marco 4: Origem dos Eucariontes -->
+            <div class="evo-milestone" data-era="design_inteligente" role="button" tabindex="0" title="~1,8 Ga: Endossimbiose Mitocondrial">
+              <div class="milestone-badge time-purple">1,80 Ga</div>
+              <div class="milestone-dot dot-purple"></div>
+              <div class="milestone-icon">🔬</div>
+              <div class="milestone-name">Eucariontes</div>
+              <div class="milestone-desc">Endossimbiose celular</div>
+            </div>
+
+            <div class="evo-connector"></div>
+
+            <!-- Marco 5: Explosão Cambriana -->
+            <div class="evo-milestone" data-era="genetica_mutacao" role="button" tabindex="0" title="~540 Ma: Explosão Cambriana de Filos Animais">
+              <div class="milestone-badge time-blue">540 Ma</div>
+              <div class="milestone-dot dot-blue"></div>
+              <div class="milestone-icon">🦐</div>
+              <div class="milestone-name">Explosão Cambriana</div>
+              <div class="milestone-desc">Planos corporais animais</div>
+            </div>
+
+            <div class="evo-connector"></div>
+
+            <!-- Marco 6: Tetrápodes & Terra Firme -->
+            <div class="evo-milestone" data-era="evolucao_humana" role="button" tabindex="0" title="~375 Ma: Tiktaalik e a Transição Água-Terra">
+              <div class="milestone-badge time-cyan">375 Ma</div>
+              <div class="milestone-dot dot-cyan"></div>
+              <div class="milestone-icon">🐟➡️🦎</div>
+              <div class="milestone-name">Tetrápodes</div>
+              <div class="milestone-desc">Transição água-terra</div>
+            </div>
+
+            <div class="evo-connector"></div>
+
+            <!-- Marco 7: Dinossauros & Aves -->
+            <div class="evo-milestone" data-era="dinossauros_paleontologia" role="button" tabindex="0" title="~230 Ma: Era Mesozoica e Dinossauros com Penas">
+              <div class="milestone-badge time-amber">230 Ma</div>
+              <div class="milestone-dot dot-amber"></div>
+              <div class="milestone-icon">🦕</div>
+              <div class="milestone-name">Dinossauros & Aves</div>
+              <div class="milestone-desc">Arcossauros com penas</div>
+            </div>
+
+            <div class="evo-connector"></div>
+
+            <!-- Marco 8: Extinção K-Pg & Mamíferos -->
+            <div class="evo-milestone" data-era="dinossauros_paleontologia" role="button" tabindex="0" title="66 Ma: Asteroide Chicxulub e Radiação dos Mamíferos">
+              <div class="milestone-badge time-red">66 Ma</div>
+              <div class="milestone-dot dot-red"></div>
+              <div class="milestone-icon">☄️</div>
+              <div class="milestone-name">Extinção K-Pg</div>
+              <div class="milestone-desc">Radiação dos mamíferos</div>
+            </div>
+
+            <div class="evo-connector"></div>
+
+            <!-- Marco 9: Linhagem Hominínea -->
+            <div class="evo-milestone" data-era="evolucao_humana" role="button" tabindex="0" title="~7 Ma: Sahelanthropus, Australopithecus e Bipedalismo">
+              <div class="milestone-badge time-orange">7 Ma</div>
+              <div class="milestone-dot dot-orange"></div>
+              <div class="milestone-icon">🦧</div>
+              <div class="milestone-name">Hominínios</div>
+              <div class="milestone-desc">Bipedalismo primata</div>
+            </div>
+
+            <div class="evo-connector"></div>
+
+            <!-- Marco 10: Homo sapiens -->
+            <div class="evo-milestone" data-era="evolucao_humana" role="button" tabindex="0" title="~300 ka: Origem do Homo sapiens na África">
+              <div class="milestone-badge time-cyan">300 ka</div>
+              <div class="milestone-dot dot-cyan"></div>
+              <div class="milestone-icon">🧠</div>
+              <div class="milestone-name">Homo sapiens</div>
+              <div class="milestone-desc">Ciência e pensamento</div>
+            </div>
+
+            <div class="evo-connector evo-connector-myth"></div>
+
+            <!-- Marco de Contraste: O Mito Criacionista dos 6.000 Anos -->
+            <div class="evo-milestone myth-milestone" data-era="biblia_literal" role="button" tabindex="0" title="6.000 anos (0,0001%): Mito da Terra Jovem">
+              <div class="milestone-badge time-myth">6.000 anos</div>
+              <div class="milestone-dot dot-myth"></div>
+              <div class="milestone-icon">🛑</div>
+              <div class="milestone-name myth-name">&ldquo;Mito dos 6 Dias&rdquo;</div>
+              <div class="milestone-desc myth-desc">T-rex vegano na Arca</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Badges Métricas do Hero -->
+        <div class="hero-stats-strip">
+          <div class="stat-pill">
+            <span class="stat-num">104</span>
+            <span class="stat-label">Falácias Catalogadas</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-num">4,54 Ga</span>
+            <span class="stat-label">Idade Real da Terra</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-num">100%</span>
+            <span class="stat-label">Fontes Peer-Reviewed</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-num">IA Gemini</span>
+            <span class="stat-label">2.5 & 3.5 Flash Ativos</span>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Centro de Controle & Gerador -->
     <section class="control-hub">
       <div class="control-buttons-row">
-        <button id="btn-random-classic" class="btn-primary-action btn-random">
-          <span>🎲 Sortear Argumento Clássico</span>
+        <button id="btn-random-classic" class="btn-primary-action btn-random" title="Sortear aleatoriamente entre os 104 argumentos clássicos">
+          <span>🎲 Sortear Clássico (104)</span>
         </button>
 
-        <button id="btn-generate-ai" class="btn-primary-action btn-ai">
+        <button id="btn-generate-ai" class="btn-primary-action btn-ai" title="Gerar novo argumento inédito via Google Gemini API">
           <span>✨ Gerar Novo com IA (Gemini)</span>
         </button>
 
-        <button id="btn-toggle-quiz" class="btn-primary-action btn-secondary">
-          <span>🎯 Testar em Modo Quiz</span>
+        <button id="btn-toggle-quiz" class="btn-primary-action btn-secondary" title="Ativar o modo desafio para adivinhar a falácia antes de ver a resposta">
+          <span>🎯 Modo Quiz Interativo</span>
         </button>
       </div>
 
-      <!-- Filtros de Categorias -->
+      <!-- Filtros de Categorias (8 categorias principais normalizadas) -->
       <div class="categories-filter">
         <span class="filter-label">Temas:</span>
-        <button class="category-pill active" data-category="all">Todos os Temas</button>
-        <button class="category-pill" data-category="abiogenese">🧬 Origem da Vida / Sopa</button>
-        <button class="category-pill" data-category="evolucao_humana">🐒 Homem & Macacos</button>
-        <button class="category-pill" data-category="design_inteligente">⚙️ Design Inteligente</button>
-        <button class="category-pill" data-category="termodinamica">🌡️ 2ª Lei da Termodinâmica</button>
+        <button class="category-pill active" data-category="all">Todos os Temas (104)</button>
+        <button class="category-pill" data-category="abiogenese">🧬 Origem da Vida</button>
+        <button class="category-pill" data-category="evolucao_humana">🐒 Homem & Primatas</button>
+        <button class="category-pill" data-category="design_inteligente">🧩 Design Inteligente</button>
+        <button class="category-pill" data-category="dinossauros_paleontologia">🦕 Dinossauros & Fósseis</button>
+        <button class="category-pill" data-category="genetica_mutacao">🔬 Genética & Mutações</button>
         <button class="category-pill" data-category="geologia_terra_jovem">⏳ Terra de 6.000 Anos</button>
-        <button class="category-pill" data-category="biblia_literal">📖 Arca de Noé & Folclore</button>
+        <button class="category-pill" data-category="termodinamica">🌡️ 2ª Lei da Termodinâmica</button>
+        <button class="category-pill" data-category="biblia_literal">📖 Arca & Folclore</button>
       </div>
     </section>
 
@@ -250,6 +441,33 @@
       </section>
     </div>
 
+    <!-- =====================================================================
+         Card Institucional: LaBiOmicS — Universidade de Mogi das Cruzes
+         ===================================================================== -->
+    <section class="institutional-section">
+      <div class="institutional-card">
+        <div class="inst-grid">
+          <div class="inst-info">
+            <div class="inst-lab-tag">🧬 Laboratório de Bioinformática e Ciências Ômicas</div>
+            <h3 class="inst-title">Desenvolvido no LaBiOmicS — Universidade de Mogi das Cruzes</h3>
+            <p class="inst-sub">
+              <strong>Coordenação:</strong> Prof. Dr. Fabiano Bezerra Menegidio · <a href="mailto:fabianomenegidio@umc.br" class="inst-email">fabianomenegidio@umc.br</a>
+            </p>
+            <p class="inst-desc">
+              O <em>Criacionator 3000</em> une a cultura de humor cético e o rigor científico universitário para defender o ensino de biologia evolutiva e desmantelar falácias anticientíficas, municiando estudantes, professores e entusiastas com mais de uma centena de artigos indexados e referências primárias revisadas por pares.
+            </p>
+          </div>
+          <div class="inst-quote-box">
+            <div class="quote-icon">🔬</div>
+            <p class="quote-text">
+              &ldquo;Diante de alegações extraordinárias, exigem-se evidências extraordinárias. E fósseis de tiranossauros comendo alface na Arca de Noé continuam sem nenhuma.&rdquo;
+            </p>
+            <span class="quote-author">— Princípio de Sagan Adaptado à Apologética</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- Modal de Configurações da Gemini API -->
@@ -261,7 +479,7 @@
       </div>
       <div class="modal-body">
         <p class="section-text">
-          O <strong>Criacionator 3000</strong> funciona 100% no seu navegador pelo GitHub Pages! Você pode usar a base embutida com dezenas de argumentos ou conectar sua própria chave gratuita do Google Gemini para gerar argumentos inéditos em tempo real.
+          O <strong>Criacionator 3000</strong> funciona 100% no seu navegador pelo GitHub Pages! Você pode navegar na base com mais de <strong>100 argumentos clássicos</strong> ou conectar sua própria chave do Google Gemini para gerar delírios inéditos em tempo real.
         </p>
 
         <div class="form-group">
@@ -307,17 +525,44 @@
     </div>
   </div>
 
-  <!-- Modal de Catálogo Completo -->
+  <!-- Modal de Catálogo Completo com Busca & Filtro -->
   <div id="modal-catalog" class="modal-backdrop">
     <div class="modal-content large">
       <div class="modal-header">
-        <h3>📚 Catálogo de Falácias Históricas Embutidas (<span id="stats-classic-count">12</span>)</h3>
+        <div class="modal-title-wrap">
+          <h3>📚 Catálogo de Falácias Históricas (<span id="stats-classic-count">104</span>)</h3>
+          <p class="modal-subtitle">Mais de 100 clássicos do criacionismo desmascarados com artigos revisados por pares</p>
+        </div>
         <button class="btn-close-modal" aria-label="Fechar">&times;</button>
       </div>
       <div class="modal-body">
-        <p class="section-text" style="margin-bottom: 1rem;">
-          Selecione qualquer uma das falácias clássicas abaixo para carregar imediatamente no comparador:
-        </p>
+        <!-- Controles de Busca e Filtro do Catálogo -->
+        <div class="catalog-filter-bar">
+          <div class="search-input-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="catalog-search-input" class="form-input catalog-search" placeholder="Buscar por termo (ex: arca, banana, olho, entropia, neandertal, tiranossauro, mutação)...">
+            <button id="btn-clear-catalog-search" class="btn-clear-search" style="display:none;" title="Limpar busca">&times;</button>
+          </div>
+
+          <div class="catalog-filter-controls">
+            <select id="catalog-category-select" class="form-select catalog-select">
+              <option value="all">Todas as Categorias (104)</option>
+              <option value="abiogenese">🧬 Origem da Vida & Abiogênese</option>
+              <option value="evolucao_humana">🐒 Evolução Humana & Primatas</option>
+              <option value="design_inteligente">🧩 Design Inteligente & Complexidade</option>
+              <option value="dinossauros_paleontologia">🦕 Dinossauros & Paleontologia</option>
+              <option value="genetica_mutacao">🔬 Genética & Mutações</option>
+              <option value="geologia_terra_jovem">⏳ Geologia & Terra Jovem</option>
+              <option value="termodinamica">🌡️ 2ª Lei da Termodinâmica</option>
+              <option value="biblia_literal">📖 Literalismo Bíblico & Arca</option>
+            </select>
+            <span id="catalog-matches-count" class="matches-count-badge">104 falácias</span>
+          </div>
+        </div>
+
         <div id="catalog-grid" class="catalog-grid">
           <!-- Preenchido via app.js -->
         </div>
@@ -349,19 +594,24 @@
     </div>
   </div>
 
-  <!-- Rodapé -->
-  <footer class="site-header site-footer">
+  <!-- Rodapé com Crédito Institucional Obrigatório -->
+  <footer class="site-footer">
     <div class="footer-content">
-      <p>
-        <strong>Criacionator 3000</strong> — Uma sátira científica dedicada ao pensamento crítico, à biologia evolutiva e à educação científica no Brasil.
+      <p class="footer-lead">
+        <strong>Desenvolvido no LaBiOmicS — Laboratório de Bioinformática e Ciências Ômicas, Universidade de Mogi das Cruzes.</strong>
+      </p>
+      <p class="footer-coord">
+        Coordenação: <strong>Prof. Dr. Fabiano Bezerra Menegidio</strong> · <a href="mailto:fabianomenegidio@umc.br" class="footer-link">fabianomenegidio@umc.br</a>
       </p>
       <p class="brand-tagline">
-        Inspirado pelos ensinamentos de Carl Sagan, Richard Dawkins, Stephen Jay Gould e pelos divulgadores científicos do Brasil.
+        Uma sátira científica dedicada ao pensamento crítico, à biologia evolutiva e ao ensino de ciências baseado em evidências.
       </p>
       <div class="footer-links">
+        <a href="https://umc.br" target="_blank" rel="noopener noreferrer" class="footer-link">Universidade de Mogi das Cruzes</a>
         <a href="http://www.talkorigins.org/" target="_blank" rel="noopener noreferrer" class="footer-link">TalkOrigins Archive</a>
         <a href="https://ncse.ngo/" target="_blank" rel="noopener noreferrer" class="footer-link">National Center for Science Education</a>
         <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer" class="footer-link">Google AI Studio</a>
+        <a href="https://github.com/LaBiOmicS/criacionator" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub LaBiOmicS/criacionator</a>
       </div>
     </div>
   </footer>
@@ -370,9 +620,9 @@
   <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=2.2"></script>
-  <script src="js/sound.js?v=2.2"></script>
-  <script src="js/gemini.js?v=2.2"></script>
-  <script src="js/app.js?v=2.2"></script>
+  <script src="js/data.js?v=3.0"></script>
+  <script src="js/sound.js?v=3.0"></script>
+  <script src="js/gemini.js?v=3.0"></script>
+  <script src="js/app.js?v=3.0"></script>
 </body>
 </html>
